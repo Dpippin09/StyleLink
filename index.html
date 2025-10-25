@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleLink - Compare Fashion Deals</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">StyleLink</h1>
+            <p class="tagline">Discover the Best Fashion Deals</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for fashion items..." />
+                <button id="searchBtn" class="btn-primary">Search</button>
+            </div>
+            <div class="filters">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="shoes">Shoes</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="accessories">Accessories</option>
+                    <option value="bags">Bags</option>
+                </select>
+                <select id="priceFilter" class="filter-select">
+                    <option value="">All Prices</option>
+                    <option value="0-50">$0 - $50</option>
+                    <option value="50-100">$50 - $100</option>
+                    <option value="100-200">$100 - $200</option>
+                    <option value="200+">$200+</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            <h2>Featured Deals</h2>
+            <div id="resultsGrid" class="results-grid"></div>
+        </div>
+
+        <div id="comparisonSection" class="comparison-section" style="display: none;">
+            <h2>Compare Deals</h2>
+            <div id="comparisonGrid" class="comparison-grid"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
