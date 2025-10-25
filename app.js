@@ -208,8 +208,8 @@ function displayDeals(deals) {
 
     if (deals.length === 0) {
         resultsGrid.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--cream); opacity: 0.8;">
-                <p style="font-size: 1.2rem;">No deals found. Try a different search or filter.</p>
+            <div class="no-results">
+                <p>No deals found. Try a different search or filter.</p>
             </div>
         `;
         return;
@@ -255,6 +255,18 @@ function createDealCard(deal) {
     return card;
 }
 
+// Show notification toast
+function showNotification(message) {
+    const toast = document.createElement('div');
+    toast.className = 'notification-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
 // Toggle comparison
 function toggleComparison(deal) {
     const index = comparisonList.findIndex(d => d.id === deal.id);
@@ -265,14 +277,29 @@ function toggleComparison(deal) {
     } else {
         // Add to comparison (max 4 items)
         if (comparisonList.length >= 4) {
-            alert('You can compare up to 4 items at a time.');
+            showNotification('You can compare up to 4 items at a time.');
             return;
         }
         comparisonList.push(deal);
     }
 
     updateComparison();
-    displayDeals(applyFilters(allDeals));
+    
+    // Update only the specific deal card button
+    const allCards = document.querySelectorAll('.deal-card');
+    allCards.forEach(card => {
+        const compareBtn = card.querySelector('.btn-compare');
+        const dealId = parseInt(compareBtn.dataset.dealId);
+        const isInComparison = comparisonList.find(d => d.id === dealId);
+        
+        if (isInComparison) {
+            compareBtn.classList.add('active');
+            compareBtn.textContent = '✓ Added';
+        } else {
+            compareBtn.classList.remove('active');
+            compareBtn.textContent = '+ Compare';
+        }
+    });
 }
 
 // Update comparison section
@@ -297,7 +324,7 @@ function createComparisonCard(deal) {
     card.className = 'comparison-card';
     
     card.innerHTML = `
-        <div style="text-align: center; font-size: 3rem; margin-bottom: 10px;">${deal.icon}</div>
+        <div class="comparison-icon">${deal.icon}</div>
         <h3>${deal.name}</h3>
         <div class="comparison-detail">
             <span class="label">Store:</span>
