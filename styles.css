@@ -1,0 +1,332 @@
+/* StyleLink - Sleek, Luxurious Fashion Deal Comparison */
+
+:root {
+    --smokey-black: #1a1a1a;
+    --dark-charcoal: #2d2d2d;
+    --slate-gray: #3d3d3d;
+    --smokey-gray: #4a4a4a;
+    --cream: #f5f5dc;
+    --cream-light: #fffef7;
+    --accent-gold: #d4af37;
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--smokey-black) 0%, var(--dark-charcoal) 100%);
+    color: var(--cream);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(180deg, var(--dark-charcoal) 0%, transparent 100%);
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--cream);
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    color: var(--cream-light);
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* Search Section */
+.search-section {
+    background: var(--dark-charcoal);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px var(--shadow-dark);
+    margin-bottom: 40px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 1rem;
+    background: var(--slate-gray);
+    border: 2px solid var(--smokey-gray);
+    border-radius: 10px;
+    color: var(--cream);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#searchInput::placeholder {
+    color: var(--cream);
+    opacity: 0.6;
+}
+
+#searchInput:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-primary {
+    padding: 15px 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #b8941f 100%);
+    color: var(--smokey-black);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.filters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 12px 20px;
+    background: var(--slate-gray);
+    border: 2px solid var(--smokey-gray);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 0.95rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+    border-color: var(--accent-gold);
+}
+
+/* Results Section */
+.results-section {
+    margin-bottom: 40px;
+}
+
+.results-section h2,
+.comparison-section h2 {
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 25px;
+    text-align: center;
+    text-shadow: 1px 1px 3px var(--shadow-dark);
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.deal-card {
+    background: var(--dark-charcoal);
+    border: 2px solid var(--slate-gray);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.deal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-gold) 0%, transparent 100%);
+}
+
+.deal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    border-color: var(--accent-gold);
+}
+
+.deal-image {
+    width: 100%;
+    height: 200px;
+    background: var(--slate-gray);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cream);
+    font-size: 3rem;
+    opacity: 0.7;
+}
+
+.deal-info h3 {
+    color: var(--cream);
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.deal-store {
+    color: var(--accent-gold);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.deal-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.current-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cream);
+}
+
+.original-price {
+    font-size: 1.1rem;
+    color: var(--smokey-gray);
+    text-decoration: line-through;
+}
+
+.discount-badge {
+    background: var(--accent-gold);
+    color: var(--smokey-black);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.deal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-compare {
+    flex: 1;
+    padding: 10px;
+    background: var(--slate-gray);
+    color: var(--cream);
+    border: 2px solid var(--smokey-gray);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-compare:hover {
+    background: var(--smokey-gray);
+    border-color: var(--accent-gold);
+}
+
+.btn-compare.active {
+    background: var(--accent-gold);
+    color: var(--smokey-black);
+    border-color: var(--accent-gold);
+}
+
+/* Comparison Section */
+.comparison-section {
+    background: var(--dark-charcoal);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px var(--shadow-dark);
+    margin-top: 40px;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.comparison-card {
+    background: var(--slate-gray);
+    border: 2px solid var(--accent-gold);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.comparison-card h3 {
+    color: var(--cream);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.comparison-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--smokey-gray);
+    color: var(--cream-light);
+}
+
+.comparison-detail:last-child {
+    border-bottom: none;
+}
+
+.comparison-detail .label {
+    opacity: 0.8;
+}
+
+.comparison-detail .value {
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 2.5rem;
+    }
+
+    .search-bar {
+        flex-direction: column;
+    }
+
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}
