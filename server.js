@@ -5,6 +5,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+// CORS: In development mode, allow all origins for easier testing
+// In production, restrict to specific allowed origins via environment variable
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? process.env.ALLOWED_ORIGINS?.split(',') || [] 
