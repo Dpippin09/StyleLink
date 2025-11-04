@@ -257,7 +257,14 @@ app.get('/api/deals/search', (req, res) => {
 
 // Get deal by ID
 app.get('/api/deals/:id', (req, res) => {
-  const deal = fashionDeals.find(d => d.id === parseInt(req.params.id));
+  const id = parseInt(req.params.id);
+  
+  // Validate that id is a valid number
+  if (isNaN(id) || id < 1) {
+    return res.status(400).json({ error: 'Invalid deal ID' });
+  }
+  
+  const deal = fashionDeals.find(d => d.id === id);
   if (deal) {
     res.json(deal);
   } else {

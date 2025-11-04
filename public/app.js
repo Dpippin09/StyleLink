@@ -1,5 +1,7 @@
-// API Base URL
-const API_BASE_URL = 'http://localhost:3001/api';
+// API Base URL - configurable for different environments
+const API_BASE_URL = window.location.origin === 'http://localhost:3001' 
+    ? 'http://localhost:3001/api' 
+    : '/api';
 
 // DOM Elements
 const searchInput = document.getElementById('searchInput');
@@ -20,6 +22,8 @@ const comparisonModal = document.getElementById('comparisonModal');
 const comparisonTitle = document.getElementById('comparisonTitle');
 const comparisonGrid = document.getElementById('comparisonGrid');
 const closeModal = document.querySelector('.close');
+const notification = document.getElementById('notification');
+const notificationMessage = document.getElementById('notificationMessage');
 
 // Initialize the app
 async function init() {
@@ -149,33 +153,46 @@ function createDealCard(deal) {
     card.className = 'deal-card';
     
     card.innerHTML = `
-        <img src="${deal.imageUrl}" alt="${deal.name}">
+        <img src="${escapeHtml(deal.imageUrl)}" alt="${escapeHtml(deal.name)}">
         <div class="deal-badge">${deal.discount}% OFF</div>
         <div class="deal-content">
-            <div class="deal-category">${deal.category}</div>
-            <h3 class="deal-name">${deal.name}</h3>
-            <p class="deal-brand">${deal.brand}</p>
-            <p class="deal-description">${deal.description}</p>
+            <div class="deal-category">${escapeHtml(deal.category)}</div>
+            <h3 class="deal-name">${escapeHtml(deal.name)}</h3>
+            <p class="deal-brand">${escapeHtml(deal.brand)}</p>
+            <p class="deal-description">${escapeHtml(deal.description)}</p>
             <div class="deal-prices">
                 <span class="sale-price">$${deal.salePrice.toFixed(2)}</span>
                 <span class="original-price">$${deal.originalPrice.toFixed(2)}</span>
             </div>
             <div class="deal-store">
                 <div>
-                    <div class="store-name">${deal.store}</div>
-                    <div class="store-location">📍 ${deal.location}</div>
+                    <div class="store-name">${escapeHtml(deal.store)}</div>
+                    <div class="store-location">📍 ${escapeHtml(deal.location)}</div>
                 </div>
             </div>
             <div class="stock-status ${deal.inStock ? 'in-stock' : 'out-of-stock'}">
                 ${deal.inStock ? '✓ In Stock' : '✗ Out of Stock'}
             </div>
-            <button class="btn btn-compare" onclick="compareDeals('${deal.name}')">
+            <button class="btn btn-compare" data-deal-name="${escapeHtml(deal.name)}">
                 Compare Prices
             </button>
         </div>
     `;
     
+    // Add event listener for compare button
+    const compareBtn = card.querySelector('.btn-compare');
+    compareBtn.addEventListener('click', () => {
+        compareDeals(deal.name);
+    });
+    
     return card;
+}
+
+// Helper function to escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Compare deals for the same item
@@ -185,14 +202,14 @@ async function compareDeals(itemName) {
         const deals = await response.json();
         
         if (deals.length === 0) {
-            alert('No comparison data available for this item.');
+            showNotification('No comparison data available for this item.');
             return;
         }
         
         displayComparison(deals, itemName);
     } catch (error) {
         console.error('Error comparing deals:', error);
-        alert('Failed to load comparison data.');
+        showNotification('Failed to load comparison data.');
     }
 }
 
@@ -275,6 +292,17 @@ function showNoResults() {
 // Hide no results message
 function hideNoResults() {
     noResults.style.display = 'none';
+}
+
+// Show notification
+function showNotification(message) {
+    notificationMessage.textContent = message;
+    notification.style.display = 'block';
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
 }
 
 // Initialize the app when DOM is ready
