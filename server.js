@@ -5,8 +5,14 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.ALLOWED_ORIGINS?.split(',') || [] 
+    : '*',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '1mb' }));
 app.use(express.static('public'));
 
 // Mock data - Fashion deals from various stores across the country
@@ -281,14 +287,15 @@ app.get('/api/deals/:id', (req, res) => {
 app.get('/api/deals/compare/:name', (req, res) => {
   try {
     const itemName = decodeURIComponent(req.params.name);
+    const trimmedName = itemName.trim();
     
     // Validate item name
-    if (!itemName || itemName.trim().length === 0 || itemName.length > 200) {
+    if (!trimmedName || trimmedName.length === 0 || trimmedName.length > 200) {
       return res.status(400).json({ error: 'Invalid item name' });
     }
     
     const similarDeals = fashionDeals.filter(deal => 
-      deal.name.toLowerCase() === itemName.trim().toLowerCase()
+      deal.name.toLowerCase() === trimmedName.toLowerCase()
     );
     
     // Sort by price (best deal first)

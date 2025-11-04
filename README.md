@@ -136,6 +136,35 @@ StyleLink/
 - Mobile app version
 - More fashion categories
 
+## Production Deployment
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+PORT=3001
+NODE_ENV=production
+ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+```
+
+### Security Considerations
+
+- **CORS**: In production, specify allowed origins in `ALLOWED_ORIGINS` environment variable
+- **Payload Limits**: JSON payload size is limited to 1MB to prevent DoS attacks
+- **Input Validation**: All user inputs are validated and sanitized
+- **XSS Protection**: All content is HTML-escaped before rendering
+
+### Deployment Options
+
+The app can be deployed to:
+- Heroku
+- AWS (EC2, Elastic Beanstalk)
+- Azure App Service
+- Google Cloud Platform
+- Vercel (frontend) + separate API hosting
+- DigitalOcean
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
