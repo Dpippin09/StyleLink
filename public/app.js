@@ -231,7 +231,14 @@ function displayComparison(deals, itemName) {
     comparisonTitle.textContent = `Compare Deals: ${itemName}`;
     comparisonGrid.innerHTML = '';
     
-    deals.forEach((deal, index) => {
+    // Verify deals are sorted by price (ascending)
+    const sortedDeals = [...deals].sort((a, b) => {
+        const priceA = typeof a.salePrice === 'number' ? a.salePrice : 0;
+        const priceB = typeof b.salePrice === 'number' ? b.salePrice : 0;
+        return priceA - priceB;
+    });
+    
+    sortedDeals.forEach((deal, index) => {
         const card = document.createElement('div');
         card.className = index === 0 ? 'comparison-card best-deal' : 'comparison-card';
         
@@ -239,11 +246,12 @@ function displayComparison(deals, itemName) {
         const prices = validateDealPrices(deal);
         
         // Calculate savings: compare best price (first, lowest) with worst price (last, highest)
-        // Since deals are sorted by price ascending, last item has highest price
-        const highestPrice = deals.length > 1 && typeof deals[deals.length - 1].salePrice === 'number'
-            ? deals[deals.length - 1].salePrice
-            : prices.salePrice;
-        const savings = highestPrice - prices.salePrice;
+        const bestPrice = validateDealPrices(sortedDeals[0]).salePrice;
+        const worstPrice = validateDealPrices(sortedDeals[sortedDeals.length - 1]).salePrice;
+        const savings = worstPrice - bestPrice;
+        
+        // Validate sizes array
+        const sizesArray = Array.isArray(deal.sizes) ? deal.sizes : [];
         
         card.innerHTML = `
             ${index === 0 ? '<div class="best-deal-badge">🏆 Best Deal</div>' : ''}
@@ -257,7 +265,7 @@ function displayComparison(deals, itemName) {
                 ${escapeHtml(prices.discount.toString())}% OFF
             </p>
             <p style="margin-bottom: 0.5rem;">
-                <strong>Sizes:</strong> ${deal.sizes.map(s => escapeHtml(s)).join(', ')}
+                <strong>Sizes:</strong> ${sizesArray.map(s => escapeHtml(String(s))).join(', ')}
             </p>
             <p class="stock-status ${deal.inStock ? 'in-stock' : 'out-of-stock'}">
                 ${deal.inStock ? '✓ In Stock' : '✗ Out of Stock'}

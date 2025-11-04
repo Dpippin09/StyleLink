@@ -281,8 +281,14 @@ app.get('/api/deals/:id', (req, res) => {
 app.get('/api/deals/compare/:name', (req, res) => {
   try {
     const itemName = decodeURIComponent(req.params.name);
+    
+    // Validate item name
+    if (!itemName || itemName.trim().length === 0 || itemName.length > 200) {
+      return res.status(400).json({ error: 'Invalid item name' });
+    }
+    
     const similarDeals = fashionDeals.filter(deal => 
-      deal.name.toLowerCase() === itemName.toLowerCase()
+      deal.name.toLowerCase() === itemName.trim().toLowerCase()
     );
     
     // Sort by price (best deal first)
