@@ -74,14 +74,29 @@ export default function Home() {
           
           {/* Right Side - Fashion Image */}
           <div className="relative">
-            <div className="aspect-[3/4] bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg overflow-hidden">
-              {/* Placeholder for fashion photography */}
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <div className="text-center">
-                  <p className="text-sm">Fashion Photography</p>
-                  <p className="text-xs mt-1">(Trench coat styling)</p>
+            <div className="aspect-[3/4] rounded-lg overflow-hidden relative">
+              <Image
+                src="/hero-fashion.jpg.png"
+                alt="Stylish woman in orange sunglasses and oversized white shirt - StyleLink fashion inspiration"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                priority
+              />
+              {/* Elegant overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              
+              {/* Stylish overlay text */}
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
+                  <h3 className="text-lg font-bold text-primary mb-1">Style Intelligence</h3>
+                  <p className="text-sm text-muted-foreground">Where fashion meets technology</p>
                 </div>
               </div>
+              
+              {/* Floating accent dots */}
+              <div className="absolute top-6 right-6 w-3 h-3 rounded-full bg-white/30 animate-pulse"></div>
+              <div className="absolute top-1/3 left-6 w-2 h-2 rounded-full bg-white/20 animate-pulse" style={{animationDelay: '1s'}}></div>
             </div>
           </div>
         </div>
