@@ -279,15 +279,19 @@ app.get('/api/deals/:id', (req, res) => {
 
 // Compare deals for the same item
 app.get('/api/deals/compare/:name', (req, res) => {
-  const itemName = decodeURIComponent(req.params.name);
-  const similarDeals = fashionDeals.filter(deal => 
-    deal.name.toLowerCase() === itemName.toLowerCase()
-  );
-  
-  // Sort by price (best deal first)
-  similarDeals.sort((a, b) => a.salePrice - b.salePrice);
-  
-  res.json(similarDeals);
+  try {
+    const itemName = decodeURIComponent(req.params.name);
+    const similarDeals = fashionDeals.filter(deal => 
+      deal.name.toLowerCase() === itemName.toLowerCase()
+    );
+    
+    // Sort by price (best deal first)
+    similarDeals.sort((a, b) => a.salePrice - b.salePrice);
+    
+    res.json(similarDeals);
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid item name parameter' });
+  }
 });
 
 // Get unique categories
@@ -306,6 +310,14 @@ app.get('/api/stores', (req, res) => {
 app.get('/api/locations', (req, res) => {
   const locations = [...new Set(fashionDeals.map(deal => deal.location))];
   res.json(locations);
+});
+
+// Error handling middleware for malformed URIs
+app.use((err, req, res, next) => {
+  if (err instanceof URIError) {
+    return res.status(400).json({ error: 'Invalid URL parameter' });
+  }
+  next(err);
 });
 
 app.listen(PORT, () => {

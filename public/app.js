@@ -153,21 +153,19 @@ function createDealCard(deal) {
     card.className = 'deal-card';
     
     // Validate numeric values
-    const salePrice = typeof deal.salePrice === 'number' ? deal.salePrice : 0;
-    const originalPrice = typeof deal.originalPrice === 'number' ? deal.originalPrice : 0;
-    const discount = typeof deal.discount === 'number' ? deal.discount : 0;
+    const prices = validateDealPrices(deal);
     
     card.innerHTML = `
         <img src="${escapeHtml(deal.imageUrl)}" alt="${escapeHtml(deal.name)}">
-        <div class="deal-badge">${escapeHtml(discount.toString())}% OFF</div>
+        <div class="deal-badge">${escapeHtml(prices.discount.toString())}% OFF</div>
         <div class="deal-content">
             <div class="deal-category">${escapeHtml(deal.category)}</div>
             <h3 class="deal-name">${escapeHtml(deal.name)}</h3>
             <p class="deal-brand">${escapeHtml(deal.brand)}</p>
             <p class="deal-description">${escapeHtml(deal.description)}</p>
             <div class="deal-prices">
-                <span class="sale-price">$${salePrice.toFixed(2)}</span>
-                <span class="original-price">$${originalPrice.toFixed(2)}</span>
+                <span class="sale-price">$${prices.salePrice.toFixed(2)}</span>
+                <span class="original-price">$${prices.originalPrice.toFixed(2)}</span>
             </div>
             <div class="deal-store">
                 <div>
@@ -201,6 +199,15 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Helper function to validate and extract deal prices
+function validateDealPrices(deal) {
+    return {
+        salePrice: typeof deal.salePrice === 'number' ? deal.salePrice : 0,
+        originalPrice: typeof deal.originalPrice === 'number' ? deal.originalPrice : 0,
+        discount: typeof deal.discount === 'number' ? deal.discount : 0
+    };
+}
+
 // Compare deals for the same item
 async function compareDeals(itemName) {
     try {
@@ -229,23 +236,25 @@ function displayComparison(deals, itemName) {
         card.className = index === 0 ? 'comparison-card best-deal' : 'comparison-card';
         
         // Validate numeric values
-        const salePrice = typeof deal.salePrice === 'number' ? deal.salePrice : 0;
-        const originalPrice = typeof deal.originalPrice === 'number' ? deal.originalPrice : 0;
-        const discount = typeof deal.discount === 'number' ? deal.discount : 0;
-        const lastPrice = deals.length > 0 && typeof deals[deals.length - 1].salePrice === 'number' 
-            ? deals[deals.length - 1].salePrice 
-            : salePrice;
+        const prices = validateDealPrices(deal);
+        
+        // Calculate savings: compare best price (first, lowest) with worst price (last, highest)
+        // Since deals are sorted by price ascending, last item has highest price
+        const highestPrice = deals.length > 1 && typeof deals[deals.length - 1].salePrice === 'number'
+            ? deals[deals.length - 1].salePrice
+            : prices.salePrice;
+        const savings = highestPrice - prices.salePrice;
         
         card.innerHTML = `
             ${index === 0 ? '<div class="best-deal-badge">🏆 Best Deal</div>' : ''}
             <h4>${escapeHtml(deal.store)}</h4>
             <p class="store-location">📍 ${escapeHtml(deal.location)}</p>
             <div class="deal-prices" style="margin: 1rem 0;">
-                <span class="sale-price">$${salePrice.toFixed(2)}</span>
-                <span class="original-price">$${originalPrice.toFixed(2)}</span>
+                <span class="sale-price">$${prices.salePrice.toFixed(2)}</span>
+                <span class="original-price">$${prices.originalPrice.toFixed(2)}</span>
             </div>
             <p style="font-weight: bold; color: #ff4757; margin-bottom: 0.5rem;">
-                ${escapeHtml(discount.toString())}% OFF
+                ${escapeHtml(prices.discount.toString())}% OFF
             </p>
             <p style="margin-bottom: 0.5rem;">
                 <strong>Sizes:</strong> ${deal.sizes.map(s => escapeHtml(s)).join(', ')}
@@ -253,8 +262,8 @@ function displayComparison(deals, itemName) {
             <p class="stock-status ${deal.inStock ? 'in-stock' : 'out-of-stock'}">
                 ${deal.inStock ? '✓ In Stock' : '✗ Out of Stock'}
             </p>
-            ${index === 0 ? `<p style="margin-top: 0.5rem; color: #28a745; font-weight: 600;">
-                You save $${(lastPrice - salePrice).toFixed(2)} vs highest price!
+            ${index === 0 && savings > 0 ? `<p style="margin-top: 0.5rem; color: #28a745; font-weight: 600;">
+                You save $${savings.toFixed(2)} vs highest price!
             </p>` : ''}
         `;
         
