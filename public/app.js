@@ -152,17 +152,22 @@ function createDealCard(deal) {
     const card = document.createElement('div');
     card.className = 'deal-card';
     
+    // Validate numeric values
+    const salePrice = typeof deal.salePrice === 'number' ? deal.salePrice : 0;
+    const originalPrice = typeof deal.originalPrice === 'number' ? deal.originalPrice : 0;
+    const discount = typeof deal.discount === 'number' ? deal.discount : 0;
+    
     card.innerHTML = `
         <img src="${escapeHtml(deal.imageUrl)}" alt="${escapeHtml(deal.name)}">
-        <div class="deal-badge">${deal.discount}% OFF</div>
+        <div class="deal-badge">${escapeHtml(discount.toString())}% OFF</div>
         <div class="deal-content">
             <div class="deal-category">${escapeHtml(deal.category)}</div>
             <h3 class="deal-name">${escapeHtml(deal.name)}</h3>
             <p class="deal-brand">${escapeHtml(deal.brand)}</p>
             <p class="deal-description">${escapeHtml(deal.description)}</p>
             <div class="deal-prices">
-                <span class="sale-price">$${deal.salePrice.toFixed(2)}</span>
-                <span class="original-price">$${deal.originalPrice.toFixed(2)}</span>
+                <span class="sale-price">$${salePrice.toFixed(2)}</span>
+                <span class="original-price">$${originalPrice.toFixed(2)}</span>
             </div>
             <div class="deal-store">
                 <div>
@@ -173,14 +178,15 @@ function createDealCard(deal) {
             <div class="stock-status ${deal.inStock ? 'in-stock' : 'out-of-stock'}">
                 ${deal.inStock ? '✓ In Stock' : '✗ Out of Stock'}
             </div>
-            <button class="btn btn-compare" data-deal-name="${escapeHtml(deal.name)}">
+            <button class="btn btn-compare">
                 Compare Prices
             </button>
         </div>
     `;
     
-    // Add event listener for compare button
+    // Add event listener for compare button and set data attribute safely
     const compareBtn = card.querySelector('.btn-compare');
+    compareBtn.setAttribute('data-deal-name', deal.name);
     compareBtn.addEventListener('click', () => {
         compareDeals(deal.name);
     });

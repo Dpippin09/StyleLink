@@ -226,16 +226,22 @@ app.get('/api/deals/search', (req, res) => {
   
   // Filter by minimum discount
   if (minDiscount) {
-    filteredDeals = filteredDeals.filter(deal => 
-      deal.discount >= parseInt(minDiscount)
-    );
+    const minDiscountValue = parseInt(minDiscount, 10);
+    if (!isNaN(minDiscountValue) && minDiscountValue >= 0) {
+      filteredDeals = filteredDeals.filter(deal => 
+        deal.discount >= minDiscountValue
+      );
+    }
   }
   
   // Filter by maximum price
   if (maxPrice) {
-    filteredDeals = filteredDeals.filter(deal => 
-      deal.salePrice <= parseFloat(maxPrice)
-    );
+    const maxPriceValue = parseFloat(maxPrice);
+    if (!isNaN(maxPriceValue) && maxPriceValue > 0) {
+      filteredDeals = filteredDeals.filter(deal => 
+        deal.salePrice <= maxPriceValue
+      );
+    }
   }
   
   // Filter by store
