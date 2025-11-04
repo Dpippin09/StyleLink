@@ -1,6 +1,6 @@
 // API Base URL - configurable for different environments
-const API_BASE_URL = window.location.origin === 'http://localhost:3001' 
-    ? 'http://localhost:3001/api' 
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? `${window.location.protocol}//${window.location.host}/api`
     : '/api';
 
 // DOM Elements
@@ -228,25 +228,33 @@ function displayComparison(deals, itemName) {
         const card = document.createElement('div');
         card.className = index === 0 ? 'comparison-card best-deal' : 'comparison-card';
         
+        // Validate numeric values
+        const salePrice = typeof deal.salePrice === 'number' ? deal.salePrice : 0;
+        const originalPrice = typeof deal.originalPrice === 'number' ? deal.originalPrice : 0;
+        const discount = typeof deal.discount === 'number' ? deal.discount : 0;
+        const lastPrice = deals.length > 0 && typeof deals[deals.length - 1].salePrice === 'number' 
+            ? deals[deals.length - 1].salePrice 
+            : salePrice;
+        
         card.innerHTML = `
             ${index === 0 ? '<div class="best-deal-badge">🏆 Best Deal</div>' : ''}
-            <h4>${deal.store}</h4>
-            <p class="store-location">📍 ${deal.location}</p>
+            <h4>${escapeHtml(deal.store)}</h4>
+            <p class="store-location">📍 ${escapeHtml(deal.location)}</p>
             <div class="deal-prices" style="margin: 1rem 0;">
-                <span class="sale-price">$${deal.salePrice.toFixed(2)}</span>
-                <span class="original-price">$${deal.originalPrice.toFixed(2)}</span>
+                <span class="sale-price">$${salePrice.toFixed(2)}</span>
+                <span class="original-price">$${originalPrice.toFixed(2)}</span>
             </div>
             <p style="font-weight: bold; color: #ff4757; margin-bottom: 0.5rem;">
-                ${deal.discount}% OFF
+                ${escapeHtml(discount.toString())}% OFF
             </p>
             <p style="margin-bottom: 0.5rem;">
-                <strong>Sizes:</strong> ${deal.sizes.join(', ')}
+                <strong>Sizes:</strong> ${deal.sizes.map(s => escapeHtml(s)).join(', ')}
             </p>
             <p class="stock-status ${deal.inStock ? 'in-stock' : 'out-of-stock'}">
                 ${deal.inStock ? '✓ In Stock' : '✗ Out of Stock'}
             </p>
             ${index === 0 ? `<p style="margin-top: 0.5rem; color: #28a745; font-weight: 600;">
-                You save $${(deals[deals.length - 1].salePrice - deal.salePrice).toFixed(2)} vs highest price!
+                You save $${(lastPrice - salePrice).toFixed(2)} vs highest price!
             </p>` : ''}
         `;
         
