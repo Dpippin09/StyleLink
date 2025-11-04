@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  /* Luxury light theme with warm cream/beige palette */
+  --background: #f5f2ed;
+  --foreground: #2c2c2c;
+  --card: #ffffff;
+  --card-foreground: #2c2c2c;
+  --popover: #ffffff;
+  --popover-foreground: #2c2c2c;
+  --primary: #2c2c2c;
+  --primary-foreground: #f5f2ed;
+  --secondary: #f8f6f1;
+  --secondary-foreground: #2c2c2c;
+  --muted: #f8f6f1;
+  --muted-foreground: #6b6b6b;
+  --accent: #2c2c2c;
+  --accent-foreground: #f5f2ed;
+  --destructive: #dc2626;
+  --destructive-foreground: #f5f2ed;
+  --border: #e8e5e0;
+  --input: #ffffff;
+  --ring: #2c2c2c;
+  --radius: 24px;
+  
+  /* Header dark bar */
+  --header-bg: #2c2c2c;
+  --header-text: #f5f2ed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  /* Custom StyleLink luxury colors */
+  --color-cream: #f5f2ed;
+  --color-cream-light: #f8f6f1;
+  --color-warm-beige: #ede8e0;
+  --color-dark-charcoal: #2c2c2c;
+  --color-medium-gray: #6b6b6b;
+  --color-light-gray: #9b9b9b;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Custom scrollbar for luxury feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-medium-gray);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-dark-charcoal);
+}
