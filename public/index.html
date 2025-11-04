@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleLink - Fashion Deals Search & Comparison</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🛍️ StyleLink</h1>
+            <p class="tagline">Find the Best Fashion Deals Across the Country</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Search and Filter Section -->
+        <section class="search-section">
+            <div class="search-bar">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search for fashion items (e.g., jeans, sneakers, handbag)..."
+                >
+                <button id="searchButton" class="btn btn-primary">Search</button>
+            </div>
+
+            <div class="filters">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="all">All Categories</option>
+                </select>
+
+                <select id="storeFilter" class="filter-select">
+                    <option value="all">All Stores</option>
+                </select>
+
+                <input 
+                    type="text" 
+                    id="locationFilter" 
+                    class="filter-input" 
+                    placeholder="Location (e.g., New York, CA)"
+                >
+
+                <input 
+                    type="number" 
+                    id="minDiscountFilter" 
+                    class="filter-input" 
+                    placeholder="Min Discount %"
+                    min="0"
+                    max="100"
+                >
+
+                <input 
+                    type="number" 
+                    id="maxPriceFilter" 
+                    class="filter-input" 
+                    placeholder="Max Price $"
+                    min="0"
+                >
+
+                <button id="applyFiltersButton" class="btn btn-secondary">Apply Filters</button>
+                <button id="clearFiltersButton" class="btn btn-outline">Clear</button>
+            </div>
+        </section>
+
+        <!-- Results Summary -->
+        <section class="results-summary" id="resultsSummary" style="display: none;">
+            <p><span id="resultsCount">0</span> deals found</p>
+        </section>
+
+        <!-- Deals Grid -->
+        <section class="deals-grid" id="dealsGrid">
+            <!-- Deals will be dynamically inserted here -->
+        </section>
+
+        <!-- Comparison Modal -->
+        <div id="comparisonModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="comparisonTitle">Compare Deals</h2>
+                <div id="comparisonGrid" class="comparison-grid">
+                    <!-- Comparison deals will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading" style="display: none;">
+            <p>Loading deals...</p>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <p>No deals found matching your criteria. Try adjusting your filters.</p>
+        </div>
+
+        <!-- Notification Area -->
+        <div id="notification" class="notification" style="display: none;">
+            <p id="notificationMessage"></p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 StyleLink. Find the best fashion deals from stores across the country.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
