@@ -4,15 +4,32 @@ import { useState } from 'react';
 import { Search, ShoppingBag, User, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import HeroCarousel from '@/components/HeroCarousel';
+import SearchWithSuggestions from '@/components/SearchWithSuggestions';
 
 // Mock popular searches
 const popularSearches = [
-  { text: "Nike Air Max", link: "#" },
-  { text: "Chloé Paddington Leather Shoulder Bag", link: "#" },
+  { text: "White shirts", link: "#" },
+  { text: "Wool coats", link: "#" },
+  { text: "Cashmere cardigans", link: "#" },
+  { text: "Designer jeans", link: "#" },
 ];
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
+  const handlePopularSearch = (searchText: string) => {
+    router.push(`/search?q=${encodeURIComponent(searchText)}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,52 +89,18 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Right Side - Fashion Image */}
+          {/* Right Side - Fashion Image Carousel */}
           <div className="relative">
-            <div className="aspect-[3/4] rounded-lg overflow-hidden relative">
-              <Image
-                src="/hero-fashion.jpg.png"
-                alt="Stylish woman in orange sunglasses and oversized white shirt - StyleLink fashion inspiration"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
-                priority
-              />
-              {/* Elegant overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-              
-              {/* Stylish overlay text */}
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
-                  <h3 className="text-lg font-bold text-primary mb-1">Style Intelligence</h3>
-                  <p className="text-sm text-muted-foreground">Where fashion meets technology</p>
-                </div>
-              </div>
-              
-              {/* Floating accent dots */}
-              <div className="absolute top-6 right-6 w-3 h-3 rounded-full bg-white/30 animate-pulse"></div>
-              <div className="absolute top-1/3 left-6 w-2 h-2 rounded-full bg-white/20 animate-pulse" style={{animationDelay: '1s'}}></div>
-            </div>
+            <HeroCarousel autoPlay={true} interval={4000} />
           </div>
         </div>
         
         {/* Search Section */}
         <div className="mt-16 text-center">
           <div className="max-w-2xl mx-auto">
-            {/* Search Bar */}
-            <div className="relative mb-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search for any product across hundreds of retailers..."
-                  className="w-full px-6 py-4 rounded-full border border-border bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-secondary rounded-full transition-colors">
-                  <Search className="w-5 h-5 text-muted-foreground" />
-                </button>
-              </div>
+            {/* Search Bar with Suggestions */}
+            <div className="mb-6">
+              <SearchWithSuggestions />
             </div>
             
             {/* Popular Searches */}
@@ -125,13 +108,13 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">Popular searches:</p>
               <div className="flex flex-wrap justify-center gap-4">
                 {popularSearches.map((search, index) => (
-                  <a
+                  <button
                     key={index}
-                    href={search.link}
-                    className="text-sm text-primary hover:underline underline-offset-4 decoration-1"
+                    onClick={() => handlePopularSearch(search.text)}
+                    className="text-sm text-primary hover:underline underline-offset-4 decoration-1 cursor-pointer"
                   >
                     {search.text}
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowLeft, Heart, Share2, ShoppingBag, Star, Filter, Grid, List, Bell, Settings, User, Camera, MapPin, Calendar, TrendingUp, Award, Target, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import SearchWithSuggestions from '@/components/SearchWithSuggestions';
 
 // Mock user data
 const demoUser = {
@@ -50,7 +51,6 @@ export default function DemoProfile() {
   const [activeTab, setActiveTab] = useState('wardrobe');
   const [viewMode, setViewMode] = useState('grid');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
 
   const categories = ['all', 'Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes', 'Knitwear'];
   
@@ -147,25 +147,7 @@ export default function DemoProfile() {
         {/* Search Bar */}
         <div className="mb-8">
           <div className="max-w-2xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search for any product across hundreds of retailers..."
-                className="w-full px-6 py-4 rounded-full border border-border bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <button className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-secondary rounded-full transition-colors">
-                <Search className="w-5 h-5 text-muted-foreground" />
-              </button>
-            </div>
-            {searchTerm && (
-              <div className="mt-3 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Searching for "{searchTerm}" across all retailers...
-                </p>
-              </div>
-            )}
+            <SearchWithSuggestions />
           </div>
         </div>
 
