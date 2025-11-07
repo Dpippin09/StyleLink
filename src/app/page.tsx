@@ -40,8 +40,8 @@ export default function Home() {
             {/* Left Navigation */}
             <nav className="flex items-center space-x-8 text-sm">
               <a href="#" className="hover:opacity-75 transition-opacity">WARDROBE AI</a>
-              <a href="#" className="hover:opacity-75 transition-opacity">MY WISHLIST</a>
-              <a href="#" className="hover:opacity-75 transition-opacity">CONTACT US</a>
+              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">MY WISHLIST</Link>
+              <Link href="/contact" className="hover:opacity-75 transition-opacity">CONTACT US</Link>
               <Link href="/demo" className="bg-white/20 text-white px-3 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
                 DEMO
               </Link>
@@ -62,10 +62,13 @@ export default function Home() {
                 <User className="w-4 h-4 mr-1" />
                 Log In
               </Link>
-              <a href="#" className="hover:opacity-75 transition-opacity flex items-center">
+              <Link href="/cart" className="hover:opacity-75 transition-opacity flex items-center relative">
                 <ShoppingBag className="w-4 h-4 mr-1" />
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                  3
+                </span>
                 My Cart
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -67,8 +67,14 @@ export default function SearchResults() {
             
             <div className="flex items-center space-x-6 text-sm">
               <a href="#" className="hover:opacity-75 transition-opacity">WARDROBE AI</a>
-              <a href="#" className="hover:opacity-75 transition-opacity">MY WISHLIST</a>
-              <ShoppingBag className="w-5 h-5" />
+              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">MY WISHLIST</Link>
+              <Link href="/contact" className="hover:opacity-75 transition-opacity">CONTACT US</Link>
+              <Link href="/cart" className="relative hover:opacity-75 transition-opacity">
+                <ShoppingBag className="w-5 h-5" />
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  3
+                </span>
+              </Link>
             </div>
           </div>
         </div>
