@@ -3,10 +3,13 @@
 import { useState } from 'react';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -24,10 +27,39 @@ export default function AuthPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (isLogin) {
+        // For login, redirect to profile with default/existing user data
+        const profileParams = new URLSearchParams({
+          firstName: 'Welcome',
+          lastName: 'Back',
+          email: formData.email || 'user@stylelink.com'
+        });
+        
+        router.push(`/profile?${profileParams.toString()}`);
+      } else {
+        // For account creation, redirect to new profile with user data
+        const profileParams = new URLSearchParams({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email
+        });
+        
+        router.push(`/profile?${profileParams.toString()}`);
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      // Handle error - you could show a toast notification here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -230,9 +262,17 @@ export default function AuthPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-primary text-primary-foreground py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              disabled={isSubmitting}
+              className="w-full bg-primary text-primary-foreground py-3 px-4 rounded-lg font-medium hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full mr-2"></div>
+                  {isLogin ? 'Signing In...' : 'Creating Account...'}
+                </>
+              ) : (
+                <>{isLogin ? 'Sign In' : 'Create Account'}</>
+              )}
             </button>
 
             {/* Divider */}
