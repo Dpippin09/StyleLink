@@ -124,18 +124,18 @@ export default function ContactPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-12">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">Get in Touch</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-4 sm:mb-6">Get in Touch</h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
             Have questions about StyleLink? Need help with your wardrobe? Our dedicated team of style experts is here to assist you on your fashion journey.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 mb-12 sm:mb-16">
           {/* Contact Form */}
-          <div className="bg-card rounded-2xl p-8 shadow-sm">
+          <div className="bg-card rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-sm">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-primary mb-3">Send us a Message</h2>
               <p className="text-muted-foreground">

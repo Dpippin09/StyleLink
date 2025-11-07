@@ -216,26 +216,33 @@ export default function CartPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center text-sm hover:opacity-75 transition-opacity">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to StyleLink
+            <Link href="/" className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
+              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Back to StyleLink</span>
+              <span className="sm:hidden">Back</span>
             </Link>
             
             <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-xl font-bold tracking-wider">
+              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
                 STYL
                 <span className="inline-block transform scale-x-[-1]">E</span>
                 LINK
               </h1>
             </div>
             
-            <div className="flex items-center space-x-6 text-sm">
-              <a href="#" className="hover:opacity-75 transition-opacity">WARDROBE AI</a>
-              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">MY WISHLIST</Link>
-              <Link href="/contact" className="hover:opacity-75 transition-opacity">CONTACT US</Link>
-              <span className="text-primary font-medium">MY CART ({cartItems.length})</span>
+            <div className="flex items-center space-x-2 sm:space-x-6 text-xs sm:text-sm">
+              <a href="#" className="hidden md:inline hover:opacity-75 transition-opacity">WARDROBE AI</a>
+              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">
+                <span className="hidden sm:inline">MY WISHLIST</span>
+                <span className="sm:hidden">WISHLIST</span>
+              </Link>
+              <Link href="/contact" className="hidden sm:inline hover:opacity-75 transition-opacity">CONTACT US</Link>
+              <span className="text-primary font-medium">
+                <span className="hidden sm:inline">MY CART ({cartItems.length})</span>
+                <span className="sm:hidden">CART ({cartItems.length})</span>
+              </span>
             </div>
           </div>
         </div>
@@ -258,11 +265,11 @@ export default function CartPage() {
           </div>
         </div>
       ) : (
-        <div className="container mx-auto px-6 py-8">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-primary mb-2">Shopping Cart</h1>
-            <p className="text-muted-foreground">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Shopping Cart</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
               {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} in your cart
             </p>
           </div>

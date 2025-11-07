@@ -9,7 +9,7 @@ interface SearchWithSuggestionsProps {
   placeholder?: string;
 }
 
-export default function SearchWithSuggestions({ placeholder = "Search for any product across hundreds of retailers..." }: SearchWithSuggestionsProps) {
+export default function SearchWithSuggestions({ placeholder = "Search for any product..." }: SearchWithSuggestionsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -73,7 +73,7 @@ export default function SearchWithSuggestions({ placeholder = "Search for any pr
           <input
             type="text"
             placeholder={placeholder}
-            className="w-full px-6 py-4 rounded-full border border-border bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center"
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-full border border-border bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-center text-sm sm:text-base"
             value={searchTerm}
             onChange={handleInputChange}
             onFocus={() => {
@@ -82,9 +82,9 @@ export default function SearchWithSuggestions({ placeholder = "Search for any pr
           />
           <button 
             type="submit"
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-secondary rounded-full transition-colors"
+            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 hover:bg-secondary rounded-full transition-colors"
           >
-            <Search className="w-5 h-5 text-muted-foreground" />
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
           </button>
         </div>
       </form>

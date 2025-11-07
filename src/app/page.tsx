@@ -35,10 +35,10 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Header - Dark bar at top */}
       <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
             {/* Left Navigation */}
-            <nav className="flex items-center space-x-8 text-sm">
+            <nav className="hidden md:flex items-center space-x-8 text-sm">
               <a href="#" className="hover:opacity-75 transition-opacity">WARDROBE AI</a>
               <Link href="/wishlist" className="hover:opacity-75 transition-opacity">MY WISHLIST</Link>
               <Link href="/contact" className="hover:opacity-75 transition-opacity">CONTACT US</Link>
@@ -47,9 +47,17 @@ export default function Home() {
               </Link>
             </nav>
             
+            {/* Mobile Navigation */}
+            <nav className="flex md:hidden items-center space-x-4 text-xs">
+              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">WISHLIST</Link>
+              <Link href="/demo" className="bg-white/20 text-white px-2 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
+                DEMO
+              </Link>
+            </nav>
+            
             {/* Center Logo */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-xl font-bold tracking-wider">
+              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
                 STYL
                 <span className="inline-block transform scale-x-[-1]">E</span>
                 LINK
@@ -57,17 +65,17 @@ export default function Home() {
             </div>
             
             {/* Right Navigation */}
-            <div className="flex items-center space-x-6 text-sm">
+            <div className="flex items-center space-x-3 sm:space-x-6 text-xs sm:text-sm">
               <Link href="/auth" className="hover:opacity-75 transition-opacity flex items-center">
                 <User className="w-4 h-4 mr-1" />
-                Log In
+                <span className="hidden sm:inline">Log In</span>
               </Link>
               <Link href="/cart" className="hover:opacity-75 transition-opacity flex items-center relative">
-                <ShoppingBag className="w-4 h-4 mr-1" />
+                <ShoppingBag className="w-4 h-4 sm:mr-1" />
                 <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
                   3
                 </span>
-                My Cart
+                <span className="hidden sm:inline">My Cart</span>
               </Link>
             </div>
           </div>
@@ -75,17 +83,17 @@ export default function Home() {
       </header>
 
       {/* Main Hero Section */}
-      <main className="container mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[60vh]">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[50vh] sm:min-h-[60vh]">
           {/* Left Side - Text Content */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1">
             <div>
-              <h2 className="text-6xl lg:text-7xl font-bold tracking-tight text-primary mb-6">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-primary mb-4 sm:mb-6">
                 STYL
                 <span className="inline-block transform scale-x-[-1]">E</span>
                 LINK
               </h2>
-              <div className="space-y-2 text-lg text-muted-foreground">
+              <div className="space-y-2 text-base sm:text-lg text-muted-foreground">
                 <p>Personal style, refined</p>
                 <p>by intelligence.</p>
               </div>
@@ -93,14 +101,14 @@ export default function Home() {
           </div>
           
           {/* Right Side - Fashion Image Carousel */}
-          <div className="relative">
+          <div className="relative order-1 lg:order-2">
             <HeroCarousel autoPlay={true} interval={4000} />
           </div>
         </div>
         
         {/* Search Section */}
-        <div className="mt-16 text-center">
-          <div className="max-w-2xl mx-auto">
+        <div className="mt-12 sm:mt-16 text-center">
+          <div className="max-w-2xl mx-auto px-4">
             {/* Search Bar with Suggestions */}
             <div className="mb-6">
               <SearchWithSuggestions />
@@ -109,12 +117,12 @@ export default function Home() {
             {/* Popular Searches */}
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">Popular searches:</p>
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                 {popularSearches.map((search, index) => (
                   <button
                     key={index}
                     onClick={() => handlePopularSearch(search.text)}
-                    className="text-sm text-primary hover:underline underline-offset-4 decoration-1 cursor-pointer"
+                    className="text-xs sm:text-sm text-primary hover:underline underline-offset-4 decoration-1 cursor-pointer px-2 py-1"
                   >
                     {search.text}
                   </button>
@@ -125,15 +133,15 @@ export default function Home() {
         </div>
         
         {/* Style Inspiration Section */}
-        <div className="mt-24 mb-20">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-primary mb-4">Find Your Style Inspiration</h3>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+        <div className="mt-16 sm:mt-24 mb-16 sm:mb-20 px-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h3 className="text-2xl sm:text-3xl font-bold text-primary mb-4">Find Your Style Inspiration</h3>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               Discover the looks that inspire you, then find the perfect pieces to make them your own
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {/* Inspiration Image 1 */}
             <div className="group cursor-pointer">
               <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary mb-4">

@@ -198,46 +198,46 @@ export default function WishlistPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-primary mb-2">My Wishlist</h1>
-              <p className="text-muted-foreground">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">My Wishlist</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {wishlistItems.length} items • Total value: ${totalValue.toLocaleString()}
-                {saleItems > 0 && <span className="text-green-600 ml-2">• {saleItems} on sale</span>}
+                {saleItems > 0 && <span className="text-green-600 block sm:inline sm:ml-2">• {saleItems} on sale</span>}
               </p>
             </div>
             
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 bg-secondary text-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <button className="flex items-center justify-center gap-2 bg-secondary text-foreground px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors">
                 <Share2 className="w-4 h-4" />
                 Share Wishlist
               </button>
-              <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              <button className="bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Shop All
               </button>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-card rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-primary">{wishlistItems.length}</p>
-              <p className="text-sm text-muted-foreground">Total Items</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="bg-card rounded-lg p-3 sm:p-4 text-center">
+              <p className="text-xl sm:text-2xl font-bold text-primary">{wishlistItems.length}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Total Items</p>
             </div>
-            <div className="bg-card rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-primary">${totalValue.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Total Value</p>
+            <div className="bg-card rounded-lg p-3 sm:p-4 text-center">
+              <p className="text-xl sm:text-2xl font-bold text-primary">${totalValue.toLocaleString()}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Total Value</p>
             </div>
-            <div className="bg-card rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-green-600">{saleItems}</p>
-              <p className="text-sm text-muted-foreground">On Sale</p>
+            <div className="bg-card rounded-lg p-3 sm:p-4 text-center">
+              <p className="text-xl sm:text-2xl font-bold text-green-600">{saleItems}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">On Sale</p>
             </div>
-            <div className="bg-card rounded-lg p-4 text-center">
-              <p className="text-2xl font-bold text-primary">{wishlistItems.filter(item => item.inStock).length}</p>
-              <p className="text-sm text-muted-foreground">In Stock</p>
+            <div className="bg-card rounded-lg p-3 sm:p-4 text-center">
+              <p className="text-xl sm:text-2xl font-bold text-primary">{wishlistItems.filter(item => item.inStock).length}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">In Stock</p>
             </div>
           </div>
         </div>
