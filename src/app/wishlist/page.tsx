@@ -185,12 +185,18 @@ export default function WishlistPage() {
             </div>
             
             <div className="flex items-center space-x-1 sm:space-x-4 text-xs sm:text-sm">
-              <a href="#" className="hidden lg:inline hover:opacity-75 transition-opacity">WARDROBE AI</a>
+              <a href="#" className="hidden md:inline hover:opacity-75 transition-opacity">
+                <span className="hidden lg:inline">WARDROBE AI</span>
+                <span className="lg:hidden">AI</span>
+              </a>
               <span className="text-primary font-medium">
                 <span className="hidden sm:inline">MY WISHLIST</span>
                 <span className="sm:hidden">WISHLIST</span>
               </span>
-              <Link href="/contact" className="hidden sm:inline hover:opacity-75 transition-opacity">CONTACT US</Link>
+              <Link href="/contact" className="hover:opacity-75 transition-opacity">
+                <span className="hidden sm:inline">CONTACT US</span>
+                <span className="sm:hidden">CONTACT</span>
+              </Link>
               <Link href="/cart" className="relative hover:opacity-75 transition-opacity">
                 <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">

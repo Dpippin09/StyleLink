@@ -116,7 +116,10 @@ export default function ContactPage() {
             </div>
             
             <div className="flex items-center space-x-1 sm:space-x-4 text-xs sm:text-sm">
-              <a href="#" className="hidden lg:inline hover:opacity-75 transition-opacity">WARDROBE AI</a>
+              <a href="#" className="hidden md:inline hover:opacity-75 transition-opacity">
+                <span className="hidden lg:inline">WARDROBE AI</span>
+                <span className="lg:hidden">AI</span>
+              </a>
               <Link href="/wishlist" className="hover:opacity-75 transition-opacity">
                 <span className="hidden sm:inline">MY WISHLIST</span>
                 <span className="sm:hidden">WISHLIST</span>
