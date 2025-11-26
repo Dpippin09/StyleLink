@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Heart, Share2, ShoppingBag, Star, Filter, Grid, List, Search, X, ExternalLink, Trash2, Eye } from 'lucide-react';
+import { Heart, Share2, ShoppingBag, Star, Filter, Grid, List, Search, X, ExternalLink, Trash2, Eye } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import MobileHeader from '@/components/MobileHeader';
 
 interface WishlistItem {
   id: string;
@@ -167,46 +168,7 @@ export default function WishlistPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
-              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Back to StyleLink</span>
-              <span className="sm:hidden">Back</span>
-            </Link>
-            
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
-                STYL
-                <span className="inline-block transform scale-x-[-1]">E</span>
-                LINK
-              </h1>
-            </div>
-            
-            <div className="flex items-center space-x-1 sm:space-x-4 text-xs sm:text-sm">
-              <a href="#" className="hidden md:inline hover:opacity-75 transition-opacity">
-                <span className="hidden lg:inline">WARDROBE AI</span>
-                <span className="lg:hidden">AI</span>
-              </a>
-              <span className="text-primary font-medium">
-                <span className="hidden sm:inline">MY WISHLIST</span>
-                <span className="sm:hidden">WISHLIST</span>
-              </span>
-              <Link href="/contact" className="hover:opacity-75 transition-opacity">
-                <span className="hidden sm:inline">CONTACT US</span>
-                <span className="sm:hidden">CONTACT</span>
-              </Link>
-              <Link href="/cart" className="relative hover:opacity-75 transition-opacity">
-                <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
-                  3
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <MobileHeader currentPage="wishlist" />
 
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Page Header */}

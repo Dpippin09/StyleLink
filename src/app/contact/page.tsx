@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Mail, Phone, MapPin, Clock, Send, MessageCircle, HelpCircle, ShoppingBag, Heart, User } from 'lucide-react';
-import Link from 'next/link';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, HelpCircle } from 'lucide-react';
+import MobileHeader from '@/components/MobileHeader';
 
 interface ContactForm {
   name: string;
@@ -98,43 +98,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
-              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Back to StyleLink</span>
-              <span className="sm:hidden">Back</span>
-            </Link>
-            
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
-                STYL
-                <span className="inline-block transform scale-x-[-1]">E</span>
-                LINK
-              </h1>
-            </div>
-            
-            <div className="flex items-center space-x-1 sm:space-x-4 text-xs sm:text-sm">
-              <a href="#" className="hidden md:inline hover:opacity-75 transition-opacity">
-                <span className="hidden lg:inline">WARDROBE AI</span>
-                <span className="lg:hidden">AI</span>
-              </a>
-              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">
-                <span className="hidden sm:inline">MY WISHLIST</span>
-                <span className="sm:hidden">WISHLIST</span>
-              </Link>
-              <span className="text-primary font-medium">
-                <span className="hidden sm:inline">CONTACT US</span>
-                <span className="sm:hidden">CONTACT</span>
-              </span>
-              <Link href="/cart" className="hover:opacity-75 transition-opacity">
-                <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <MobileHeader currentPage="contact" />
 
       <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Hero Section */}
