@@ -99,26 +99,35 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center text-sm hover:opacity-75 transition-opacity">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to StyleLink
+            <Link href="/" className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
+              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Back to StyleLink</span>
+              <span className="sm:hidden">Back</span>
             </Link>
             
             <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-xl font-bold tracking-wider">
+              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
                 STYL
                 <span className="inline-block transform scale-x-[-1]">E</span>
                 LINK
               </h1>
             </div>
             
-            <div className="flex items-center space-x-6 text-sm">
-              <a href="#" className="hover:opacity-75 transition-opacity">WARDROBE AI</a>
-              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">MY WISHLIST</Link>
-              <span className="text-primary font-medium">CONTACT US</span>
-              <ShoppingBag className="w-5 h-5" />
+            <div className="flex items-center space-x-1 sm:space-x-4 text-xs sm:text-sm">
+              <a href="#" className="hidden lg:inline hover:opacity-75 transition-opacity">WARDROBE AI</a>
+              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">
+                <span className="hidden sm:inline">MY WISHLIST</span>
+                <span className="sm:hidden">WISHLIST</span>
+              </Link>
+              <span className="text-primary font-medium">
+                <span className="hidden sm:inline">CONTACT US</span>
+                <span className="sm:hidden">CONTACT</span>
+              </span>
+              <Link href="/cart" className="hover:opacity-75 transition-opacity">
+                <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Link>
             </div>
           </div>
         </div>
