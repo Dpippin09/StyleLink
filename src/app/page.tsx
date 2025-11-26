@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import HeroCarousel from '@/components/HeroCarousel';
 import SearchWithSuggestions from '@/components/SearchWithSuggestions';
+import MobileHeader from '@/components/MobileHeader';
 
 // Mock popular searches
 const popularSearches = [
@@ -33,54 +34,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header - Dark bar at top */}
-      <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between">
-            {/* Left Navigation */}
-            <nav className="hidden md:flex items-center space-x-8 text-sm">
-              <a href="#" className="hover:opacity-75 transition-opacity">WARDROBE AI</a>
-              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">MY WISHLIST</Link>
-              <Link href="/contact" className="hover:opacity-75 transition-opacity">CONTACT US</Link>
-              <Link href="/demo" className="bg-white/20 text-white px-3 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
-                DEMO
-              </Link>
-            </nav>
-            
-            {/* Mobile Navigation */}
-            <nav className="flex md:hidden items-center space-x-4 text-xs">
-              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">WISHLIST</Link>
-              <Link href="/demo" className="bg-white/20 text-white px-2 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
-                DEMO
-              </Link>
-            </nav>
-            
-            {/* Center Logo */}
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <h1 className="text-lg sm:text-xl font-bold tracking-wider">
-                STYL
-                <span className="inline-block transform scale-x-[-1]">E</span>
-                LINK
-              </h1>
-            </div>
-            
-            {/* Right Navigation */}
-            <div className="flex items-center space-x-3 sm:space-x-6 text-xs sm:text-sm">
-              <Link href="/auth" className="hover:opacity-75 transition-opacity flex items-center">
-                <User className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Log In</span>
-              </Link>
-              <Link href="/cart" className="hover:opacity-75 transition-opacity flex items-center relative">
-                <ShoppingBag className="w-4 h-4 sm:mr-1" />
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
-                  3
-                </span>
-                <span className="hidden sm:inline">My Cart</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Header */}
+      <MobileHeader currentPage="home" />
 
       {/* Main Hero Section */}
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">

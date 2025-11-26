@@ -25,19 +25,31 @@ export default function MobileHeader({
     { href: '#', label: 'WARDROBE AI', current: currentPage === 'wardrobe' },
     { href: '/wishlist', label: 'MY WISHLIST', current: currentPage === 'wishlist' },
     { href: '/contact', label: 'CONTACT US', current: currentPage === 'contact' },
+    { href: '/demo', label: 'DEMO', current: currentPage === 'demo' },
     { href: '/auth', label: 'LOG IN', current: currentPage === 'auth' }
   ];
+
+  const isHomePage = currentPage === 'home';
 
   return (
     <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3 relative">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between">
-          {/* Back Button */}
-          <Link href={backLink} className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
-            <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">{backText}</span>
-            <span className="sm:hidden">Back</span>
-          </Link>
+          {/* Left Side - Back Button (non-home) or Mobile Demo Link (home) */}
+          {!isHomePage ? (
+            <Link href={backLink} className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
+              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">{backText}</span>
+              <span className="sm:hidden">Back</span>
+            </Link>
+          ) : (
+            <div className="flex md:hidden items-center space-x-2 text-xs">
+              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">WISHLIST</Link>
+              <Link href="/demo" className="bg-white/20 text-white px-2 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
+                DEMO
+              </Link>
+            </div>
+          )}
           
           {/* Center Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
@@ -55,6 +67,10 @@ export default function MobileHeader({
                 <span key={item.href} className="text-primary font-medium">
                   {item.label}
                 </span>
+              ) : item.label === 'DEMO' ? (
+                <Link key={item.href} href={item.href} className="bg-white/20 text-white px-3 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
+                  {item.label}
+                </Link>
               ) : (
                 <Link key={item.href} href={item.href} className="hover:opacity-75 transition-opacity">
                   {item.label}
@@ -105,6 +121,15 @@ export default function MobileHeader({
                     <span key={item.href} className="block text-sm text-primary font-medium">
                       {item.label}
                     </span>
+                  ) : item.label === 'DEMO' ? (
+                    <Link 
+                      key={item.href}
+                      href={item.href} 
+                      className="inline-block bg-white/20 text-white px-3 py-2 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30 text-sm"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
                   ) : (
                     <Link 
                       key={item.href}
