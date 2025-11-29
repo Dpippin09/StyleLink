@@ -100,8 +100,8 @@ async function main() {
       brandId: zaraBrand.id,
       sourceUrl: 'https://www.zara.com/us/en/dress-p12345678.html',
       images: [
-        'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600',
-        'https://images.unsplash.com/photo-1566479179817-c2e08b6b9cb3?w=600'
+        'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1566479179817-c2e08b6b9cb3?w=600&auto=format&fit=crop'
       ]
     },
     {
@@ -117,8 +117,8 @@ async function main() {
       brandId: hMBrand.id,
       sourceUrl: 'https://www2.hm.com/en_us/productpage.12345.html',
       images: [
-        'https://images.unsplash.com/photo-1564257577-7fd4b61137c3?w=600',
-        'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600'
+        'https://images.unsplash.com/photo-1564257577-7fd4b61137c3?w=600&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600&auto=format&fit=crop'
       ]
     },
     {
@@ -133,7 +133,7 @@ async function main() {
       brandId: zaraBrand.id,
       sourceUrl: 'https://www.zara.com/us/en/jacket-p98765432.html',
       images: [
-        'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=600'
+        'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&auto=format&fit=crop'
       ]
     },
     {
@@ -149,8 +149,8 @@ async function main() {
       brandId: nikeBrand.id,
       sourceUrl: 'https://www.nike.com/t/air-max-270-womens-shoes-xyz123',
       images: [
-        'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600',
-        'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600'
+        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&auto=format&fit=crop'
       ]
     },
     {
@@ -165,7 +165,7 @@ async function main() {
       brandId: hMBrand.id,
       sourceUrl: 'https://www2.hm.com/en_us/productpage.67890.html',
       images: [
-        'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600'
+        'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&auto=format&fit=crop'
       ]
     },
     {
@@ -180,7 +180,7 @@ async function main() {
       brandId: zaraBrand.id,
       sourceUrl: 'https://www.zara.com/us/en/scarf-p11223344.html',
       images: [
-        'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=600'
+        'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=600&auto=format&fit=crop'
       ]
     }
   ]

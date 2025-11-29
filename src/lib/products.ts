@@ -58,6 +58,15 @@ export async function getProducts(params?: {
     const { category, brand, search, page = 1, limit = 12 } = params || {}
     const skip = (page - 1) * limit
 
+    // Check if database is available
+    if (!prisma) {
+      return {
+        success: false,
+        data: [],
+        error: 'Database not available'
+      }
+    }
+
     // Build where clause
     const where: any = {}
     

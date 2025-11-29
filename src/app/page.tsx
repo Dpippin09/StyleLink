@@ -86,17 +86,10 @@ export default async function Home() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-            {/* Inspiration Image 1 */}
+            {/* Inspiration Card 1 */}
             <div className="group cursor-pointer">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary mb-4">
-                <Image
-                  src="/woman-sunglasses.jpg"
-                  alt="Effortless chic style with oversized white shirt and orange sunglasses"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
+              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br from-pink-50 to-purple-100 mb-4">
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-200/20 to-purple-200/20" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="bg-white/90 backdrop-blur rounded-lg p-3">
                     <h4 className="font-semibold text-primary text-sm">Effortless Chic</h4>
@@ -110,17 +103,10 @@ export default async function Home() {
               </button>
             </div>
 
-            {/* Inspiration Image 2 */}
+            {/* Inspiration Card 2 */}
             <div className="group cursor-pointer">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary mb-4">
-                <Image
-                  src="/man-beige-coat.jpg"
-                  alt="Modern minimalist style with flowing beige coat"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
+              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-indigo-100 mb-4">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-200/20 to-indigo-200/20" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="bg-white/90 backdrop-blur rounded-lg p-3">
                     <h4 className="font-semibold text-primary text-sm">Modern Minimalism</h4>
@@ -134,17 +120,10 @@ export default async function Home() {
               </button>
             </div>
 
-            {/* Inspiration Image 3 */}
+            {/* Inspiration Card 3 */}
             <div className="group cursor-pointer">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary mb-4">
-                <Image
-                  src="/woman-cardigan.jpg"
-                  alt="Classic layering with black camisole and white cardigan"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />
+              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 mb-4">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-200/20 to-emerald-200/20" />
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="bg-white/90 backdrop-blur rounded-lg p-3">
                     <h4 className="font-semibold text-primary text-sm">Timeless Elegance</h4>
