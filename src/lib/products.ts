@@ -148,7 +148,13 @@ export async function getProducts(params?: {
 
     try {
       // Try database first
-      const { prisma } = await import('@/lib/db')
+      let prisma = null
+      try {
+        const dbModule = await import('@/lib/db')
+        prisma = dbModule.prisma
+      } catch (importError) {
+        console.log('Database module not available, using mock data')
+      }
 
       if (prisma) {
         // Build where clause

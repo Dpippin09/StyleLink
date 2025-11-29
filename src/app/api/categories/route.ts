@@ -57,7 +57,14 @@ export async function GET() {
     let categories: any = mockCategories
     
     try {
-      const { prisma } = await import('@/lib/db')
+      let prisma = null
+      try {
+        const dbModule = await import('@/lib/db')
+        prisma = dbModule.prisma
+      } catch (importError) {
+        console.log('Database module not available, using mock data')
+      }
+      
       if (prisma) {
         categories = await prisma.category.findMany({
           include: {

@@ -3,10 +3,13 @@
   "regions": ["iad1"],
   "build": {
     "env": {
-      "PRISMA_CLI_BINARY_TARGETS": "debian-openssl-3.0.x",
-      "SKIP_ENV_VALIDATION": "true"
+      "SKIP_ENV_VALIDATION": "true",
+      "PRISMA_HIDE_UPDATE_MESSAGE": "true",
+      "NODE_ENV": "production"
     }
   },
+  "installCommand": "npm install",
+  "buildCommand": "next build",
   "functions": {
     "src/app/api/**": {
       "maxDuration": 30
