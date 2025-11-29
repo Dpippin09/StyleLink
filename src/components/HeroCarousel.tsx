@@ -184,15 +184,6 @@ export default function HeroCarousel({ autoPlay = true, interval = 5000 }: HeroC
         )}
       </div>
       
-      <style jsx>{`
-        @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-        .duration-1200 {
-          transition-duration: 1200ms;
-        }
-      `}</style>
     </div>
   );
 }

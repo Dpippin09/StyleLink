@@ -1,13 +1,12 @@
-'use client';
-
-import { useState } from 'react';
-import { Search, ShoppingBag, User, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 import HeroCarousel from '@/components/HeroCarousel';
 import SearchWithSuggestions from '@/components/SearchWithSuggestions';
 import MobileHeader from '@/components/MobileHeader';
+import Footer from '@/components/Footer';
+import FeaturedProducts from '@/components/FeaturedProducts';
+import { getProducts } from '@/lib/products';
 
 // Mock popular searches
 const popularSearches = [
@@ -17,20 +16,10 @@ const popularSearches = [
   { text: "Designer jeans", link: "#" },
 ];
 
-export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const router = useRouter();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
-    }
-  };
-
-  const handlePopularSearch = (searchText: string) => {
-    router.push(`/search?q=${encodeURIComponent(searchText)}`);
-  };
+export default async function Home() {
+  // Fetch featured products from database
+  const productsResponse = await getProducts({ limit: 8 });
+  const featuredProducts = productsResponse.success ? productsResponse.data : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,13 +63,13 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">Popular searches:</p>
               <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                 {popularSearches.map((search, index) => (
-                  <button
+                  <Link
                     key={index}
-                    onClick={() => handlePopularSearch(search.text)}
+                    href={`/search?q=${encodeURIComponent(search.text)}`}
                     className="text-xs sm:text-sm text-primary hover:underline underline-offset-4 decoration-1 cursor-pointer px-2 py-1"
                   >
                     {search.text}
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -193,7 +182,12 @@ export default function Home() {
             ))}
           </div>
         </div>
+
+        {/* Featured Products Section */}
+        <FeaturedProducts products={featuredProducts} />
       </main>
+      
+      <Footer />
     </div>
   );
 }

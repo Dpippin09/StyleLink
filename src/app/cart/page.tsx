@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowLeft, Minus, Plus, X, ShoppingBag, CreditCard, Truck, Shield, Gift, Tag, MapPin, Edit } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 interface CartItem {
   id: string;
@@ -29,50 +30,8 @@ interface ShippingAddress {
   country: string;
 }
 
-// Mock cart data
-const mockCartItems: CartItem[] = [
-  {
-    id: '1',
-    title: 'Oversized White Cotton Shirt',
-    brand: 'Everlane',
-    price: 68,
-    originalPrice: 85,
-    image: '/hero-fashion.jpg.png',
-    retailer: 'Everlane',
-    size: 'M',
-    color: 'White',
-    quantity: 1,
-    inStock: true,
-    estimatedDelivery: 'Nov 12, 2025'
-  },
-  {
-    id: '2',
-    title: 'Beige Wool Coat',
-    brand: 'COS',
-    price: 295,
-    image: '/man-beige-coat.jpg.png',
-    retailer: 'COS',
-    size: 'L',
-    color: 'Beige',
-    quantity: 1,
-    inStock: true,
-    estimatedDelivery: 'Nov 14, 2025'
-  },
-  {
-    id: '3',
-    title: 'Designer Jeans',
-    brand: 'Citizens of Humanity',
-    price: 198,
-    originalPrice: 248,
-    image: '/hero-fashion.jpg.png',
-    retailer: 'Nordstrom',
-    size: '28',
-    color: 'Dark Wash',
-    quantity: 2,
-    inStock: true,
-    estimatedDelivery: 'Nov 13, 2025'
-  }
-];
+// Mock cart data - starting empty for testing
+const mockCartItems: CartItem[] = [];
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState(mockCartItems);
@@ -208,6 +167,8 @@ export default function CartPage() {
             </div>
           </div>
         </div>
+        
+        <Footer />
       </div>
     );
   }
@@ -240,8 +201,8 @@ export default function CartPage() {
               </Link>
               <Link href="/contact" className="hidden sm:inline hover:opacity-75 transition-opacity">CONTACT US</Link>
               <span className="text-primary font-medium">
-                <span className="hidden sm:inline">MY CART ({cartItems.length})</span>
-                <span className="sm:hidden">CART ({cartItems.length})</span>
+                <span className="hidden sm:inline">MY CART{cartItems.length > 0 ? ` (${cartItems.length})` : ''}</span>
+                <span className="sm:hidden">CART{cartItems.length > 0 ? ` (${cartItems.length})` : ''}</span>
               </span>
             </div>
           </div>
@@ -492,6 +453,8 @@ export default function CartPage() {
           </div>
         </div>
       )}
+      
+      <Footer />
     </div>
   );
 }

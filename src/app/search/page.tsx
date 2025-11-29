@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearch, type Product } from '@/hooks/useSearch';
 import MobileHeader from '@/components/MobileHeader';
+import Footer from '@/components/Footer';
 
 function SearchResults() {
   const searchParams = useSearchParams();
@@ -214,6 +215,8 @@ function SearchResults() {
           </>
         )}
       </div>
+      
+      <Footer />
     </div>
   );
 }

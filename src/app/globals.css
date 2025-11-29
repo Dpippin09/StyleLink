@@ -28,39 +28,6 @@
   --header-text: #f5f2ed;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  
-  /* Custom StyleLink luxury colors */
-  --color-cream: #f5f2ed;
-  --color-cream-light: #f8f6f1;
-  --color-warm-beige: #ede8e0;
-  --color-dark-charcoal: #2c2c2c;
-  --color-medium-gray: #6b6b6b;
-  --color-light-gray: #9b9b9b;
-  
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
 * {
   border-color: var(--border);
 }
@@ -97,4 +64,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-dark-charcoal);
+}
+
+/* HeroCarousel animations */
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.duration-1200 {
+  transition-duration: 1200ms;
 }

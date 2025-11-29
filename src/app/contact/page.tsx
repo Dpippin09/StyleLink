@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle, HelpCircle } from 'lucide-react';
 import MobileHeader from '@/components/MobileHeader';
+import Footer from '@/components/Footer';
 
 interface ContactForm {
   name: string;
@@ -372,6 +373,8 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

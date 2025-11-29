@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication and profile management
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Profile information
+  profile       Profile?
+  
+  // User interactions
+  wishlistItems WishlistItem[]
+  cartItems     CartItem[]
+  orders        Order[]
+  reviews       Review[]
+  
+  @@map("users")
+}
+
+// User profile with style preferences
+model Profile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  bio           String?
+  location      String?
+  birthDate     DateTime?
+  gender        String?
+  
+  // Style preferences (stored as comma-separated strings)
+  styleTypes    String?  // "minimalist,bohemian,classic,trendy"
+  sizePreference String?
+  colorPreferences String? // "black,white,navy,pink"
+  priceRange    String?  // "budget", "mid-range", "luxury"
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("profiles")
+}
+
+// Product categories
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  image       String?
+  parentId    String?
+  
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("categories")
+}
+
+// Brands/Retailers
+model Brand {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  logo        String?
+  website     String?
+  
+  products    Product[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("brands")
+}
+
+// Products from various retailers
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  description   String?
+  
+  // Product details
+  price         Float
+  originalPrice Float?
+  currency      String   @default("USD")
+  inStock       Boolean  @default(true)
+  
+  // Product attributes (stored as comma-separated strings)
+  sizes         String? // "XS,S,M,L,XL"
+  colors        String? // "Red,Blue,Black"
+  materials     String? // "Cotton,Polyester,Silk"
+  
+  // Images
+  images        ProductImage[]
+  
+  // Categorization
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  
+  brandId       String
+  brand         Brand    @relation(fields: [brandId], references: [id])
+  
+  // External source
+  sourceUrl     String?  // URL to the actual retailer
+  affiliate     Boolean  @default(false)
+  
+  // User interactions
+  wishlistItems WishlistItem[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+  reviews       Review[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("products")
+}
+
+// Product images
+model ProductImage {
+  id          String  @id @default(cuid())
+  url         String
+  alt         String?
+  isPrimary   Boolean @default(false)
+  order       Int     @default(0)
+  
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@map("product_images")
+}
+
+// User wishlist
+model WishlistItem {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  addedAt     DateTime @default(now())
+  
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// Shopping cart
+model CartItem {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  quantity    Int      @default(1)
+  size        String?
+  color       String?
+  
+  addedAt     DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, productId, size, color])
+  @@map("cart_items")
+}
+
+// Orders
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  
+  // Order details
+  status          String      @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED, REFUNDED
+  totalAmount     Float
+  currency        String      @default("USD")
+  
+  // Shipping information (stored as text)
+  shippingAddress String?
+  billingAddress  String?
+  
+  // Payment information
+  paymentStatus   String @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  paymentMethod   String?
+  
+  // Timestamps
+  orderDate       DateTime    @default(now())
+  shippedDate     DateTime?
+  deliveredDate   DateTime?
+  
+  items           OrderItem[]
+  
+  @@map("orders")
+}
+
+// Order items
+model OrderItem {
+  id          String  @id @default(cuid())
+  
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  
+  quantity    Int
+  size        String?
+  color       String?
+  price       Float   // Price at time of order
+  
+  @@map("order_items")
+}
+
+// Product reviews
+model Review {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  rating      Int      // 1-5 stars
+  title       String?
+  comment     String?
+  verified    Boolean  @default(false) // Verified purchase
+  
+  helpful     Int      @default(0) // Helpful votes
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, productId])
+  @@map("reviews")
+}

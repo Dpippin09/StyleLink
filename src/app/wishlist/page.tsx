@@ -5,6 +5,7 @@ import { Heart, Share2, ShoppingBag, Star, Filter, Grid, List, Search, X, Extern
 import Image from 'next/image';
 import Link from 'next/link';
 import MobileHeader from '@/components/MobileHeader';
+import Footer from '@/components/Footer';
 
 interface WishlistItem {
   id: string;
@@ -406,6 +407,8 @@ export default function WishlistPage() {
           </div>
         )}
       </div>
+      
+      <Footer />
     </div>
   );
 }

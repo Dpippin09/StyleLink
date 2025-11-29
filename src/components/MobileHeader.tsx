@@ -17,7 +17,7 @@ export default function MobileHeader({
   backLink = '/', 
   backText = 'Back to StyleLink',
   showCart = true,
-  cartCount = 3 
+  cartCount = 0 
 }: MobileHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
