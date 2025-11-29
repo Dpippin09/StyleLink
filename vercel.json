@@ -3,7 +3,8 @@
   "regions": ["iad1"],
   "build": {
     "env": {
-      "PRISMA_CLI_BINARY_TARGETS": "linux-openssl-1.1.x"
+      "PRISMA_CLI_BINARY_TARGETS": "debian-openssl-3.0.x",
+      "SKIP_ENV_VALIDATION": "true"
     }
   },
   "functions": {

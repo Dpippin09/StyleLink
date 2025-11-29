@@ -6,14 +6,19 @@ const globalForPrisma = globalThis as unknown as {
 
 // Only create Prisma client if we have a database URL
 function createPrismaClient(): PrismaClient | null {
+  // In production (Vercel), if DATABASE_URL is not set, return null
   if (!process.env.DATABASE_URL) {
-    console.warn('DATABASE_URL not found, database features will be disabled')
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Production mode: DATABASE_URL not found, using mock data fallbacks')
+    } else {
+      console.warn('DATABASE_URL not found, database features will be disabled')
+    }
     return null
   }
 
   try {
     return new PrismaClient({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
+      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : [],
     })
   } catch (error) {
     console.error('Failed to create Prisma client:', error)
