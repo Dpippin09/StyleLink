@@ -150,88 +150,90 @@ export async function getProducts(params?: {
       // Try database first
       const { prisma } = await import('@/lib/db')
 
-      // Build where clause
-      const where: any = {}
-      
-      if (category) {
-        where.category = {
-          slug: category
+      if (prisma) {
+        // Build where clause
+        const where: any = {}
+        
+        if (category) {
+          where.category = {
+            slug: category
+          }
         }
-      }
-      
-      if (brand) {
-        where.brand = {
-          slug: brand
+        
+        if (brand) {
+          where.brand = {
+            slug: brand
+          }
         }
-      }
-      
-      if (search) {
-        where.OR = [
-          { name: { contains: search, mode: 'insensitive' } },
-          { description: { contains: search, mode: 'insensitive' } }
-        ]
-      }
+        
+        if (search) {
+          where.OR = [
+            { name: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } }
+          ]
+        }
 
-      // Get products with related data
-      const [products, totalCount] = await Promise.all([
-        prisma.product.findMany({
-          where,
-          include: {
-            images: {
-              orderBy: { order: 'asc' }
+        // Get products with related data
+        const [products, totalCount] = await Promise.all([
+          prisma.product.findMany({
+            where,
+            include: {
+              images: {
+                orderBy: { order: 'asc' }
+              },
+              category: true,
+              brand: true
             },
-            category: true,
-            brand: true
-          },
-          orderBy: { createdAt: 'desc' },
-          skip,
-          take: limit
-        }),
-        prisma.product.count({ where })
-      ])
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit
+          }),
+          prisma.product.count({ where })
+        ])
 
-      return {
-        success: true,
-        data: products,
-        pagination: {
-          page,
-          limit,
-          total: totalCount,
-          pages: Math.ceil(totalCount / limit)
+        return {
+          success: true,
+          data: products,
+          pagination: {
+            page,
+            limit,
+            total: totalCount,
+            pages: Math.ceil(totalCount / limit)
+          }
         }
       }
     } catch (dbError) {
       console.log('Database not available, using mock data')
-      
-      // Filter mock data based on search params
-      let filteredProducts = [...mockProducts]
-      
-      if (search) {
-        filteredProducts = filteredProducts.filter(p => 
-          p.name.toLowerCase().includes(search.toLowerCase()) ||
-          (p.description && p.description.toLowerCase().includes(search.toLowerCase()))
-        )
-      }
-      
-      if (category) {
-        filteredProducts = filteredProducts.filter(p => p.category.slug === category)
-      }
-      
-      if (brand) {
-        filteredProducts = filteredProducts.filter(p => p.brand.slug === brand)
-      }
+    }
+    
+    // Filter mock data based on search params
+    let filteredProducts = [...mockProducts]
+    
+    if (search) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        (p.description && p.description.toLowerCase().includes(search.toLowerCase()))
+      )
+    }
+    
+    if (category) {
+      filteredProducts = filteredProducts.filter(p => p.category.slug === category)
+    }
+    
+    if (brand) {
+      filteredProducts = filteredProducts.filter(p => p.brand.slug === brand)
+    }
 
-      const paginatedProducts = filteredProducts.slice(skip, skip + limit)
-      
-      return {
-        success: true,
-        data: paginatedProducts,
-        pagination: {
-          page,
-          limit,
-          total: filteredProducts.length,
-          pages: Math.ceil(filteredProducts.length / limit)
-        }
+    const paginatedProducts = filteredProducts.slice(skip, skip + limit)
+    
+    return {
+      success: true,
+      data: paginatedProducts,
+      pagination: {
+        page,
+        limit,
+        total: filteredProducts.length,
+        pages: Math.ceil(filteredProducts.length / limit)
       }
     }
   } catch (error) {
@@ -246,21 +248,29 @@ export async function getProducts(params?: {
 
 export async function getCategories() {
   try {
-    const categories = await prisma.category.findMany({
-      include: {
-        children: true,
-        _count: {
-          select: {
-            products: true
+    if (prisma) {
+      const categories = await prisma.category.findMany({
+        include: {
+          children: true,
+          _count: {
+            select: {
+              products: true
+            }
           }
-        }
-      },
-      orderBy: { name: 'asc' }
-    })
+        },
+        orderBy: { name: 'asc' }
+      })
 
+      return {
+        success: true,
+        data: categories
+      }
+    }
+    
     return {
-      success: true,
-      data: categories
+      success: false,
+      data: [],
+      error: 'Database not available'
     }
   } catch (error) {
     console.error('Error fetching categories:', error)
@@ -274,20 +284,28 @@ export async function getCategories() {
 
 export async function getBrands() {
   try {
-    const brands = await prisma.brand.findMany({
-      include: {
-        _count: {
-          select: {
-            products: true
+    if (prisma) {
+      const brands = await prisma.brand.findMany({
+        include: {
+          _count: {
+            select: {
+              products: true
+            }
           }
-        }
-      },
-      orderBy: { name: 'asc' }
-    })
+        },
+        orderBy: { name: 'asc' }
+      })
 
+      return {
+        success: true,
+        data: brands
+      }
+    }
+    
     return {
-      success: true,
-      data: brands
+      success: false,
+      data: [],
+      error: 'Database not available'
     }
   } catch (error) {
     console.error('Error fetching brands:', error)

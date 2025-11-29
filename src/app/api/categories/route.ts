@@ -58,17 +58,19 @@ export async function GET() {
     
     try {
       const { prisma } = await import('@/lib/db')
-      categories = await prisma.category.findMany({
-        include: {
-          children: true,
-          _count: {
-            select: {
-              products: true
+      if (prisma) {
+        categories = await prisma.category.findMany({
+          include: {
+            children: true,
+            _count: {
+              select: {
+                products: true
+              }
             }
-          }
-        },
-        orderBy: { name: 'asc' }
-      })
+          },
+          orderBy: { name: 'asc' }
+        })
+      }
     } catch (dbError) {
       console.log('Database not available, using mock data')
     }

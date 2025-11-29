@@ -105,48 +105,50 @@ export async function GET(request: NextRequest) {
       // Try to use database if available
       const { prisma } = await import('@/lib/db')
       
-      // Build where clause
-      const where: any = {}
-      
-      if (category) {
-        where.category = {
-          slug: category
+      if (prisma) {
+        // Build where clause
+        const where: any = {}
+        
+        if (category) {
+          where.category = {
+            slug: category
+          }
         }
-      }
-      
-      if (brand) {
-        where.brand = {
-          slug: brand
+        
+        if (brand) {
+          where.brand = {
+            slug: brand
+          }
         }
-      }
-      
-      if (search) {
-        where.OR = [
-          { name: { contains: search, mode: 'insensitive' } },
-          { description: { contains: search, mode: 'insensitive' } }
-        ]
-      }
+        
+        if (search) {
+          where.OR = [
+            { name: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } }
+          ]
+        }
 
-      // Get products with related data
-      const [dbProducts, dbTotalCount] = await Promise.all([
-        prisma.product.findMany({
-          where,
-          include: {
-            images: {
-              orderBy: { order: 'asc' }
+        // Get products with related data
+        const [dbProducts, dbTotalCount] = await Promise.all([
+          prisma.product.findMany({
+            where,
+            include: {
+              images: {
+                orderBy: { order: 'asc' }
+              },
+              category: true,
+              brand: true
             },
-            category: true,
-            brand: true
-          },
-          orderBy: { createdAt: 'desc' },
-          skip,
-          take: limit
-        }),
-        prisma.product.count({ where })
-      ])
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit
+          }),
+          prisma.product.count({ where })
+        ])
 
-      products = dbProducts
-      totalCount = dbTotalCount
+        products = dbProducts
+        totalCount = dbTotalCount
+      }
     } catch (dbError) {
       console.log('Database not available, using mock data')
       // Filter mock data based on search params
