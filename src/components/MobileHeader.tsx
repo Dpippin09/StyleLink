@@ -71,6 +71,10 @@ export default function MobileHeader({
                 <Link key={item.href} href={item.href} className="bg-white/20 text-white px-3 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
                   {item.label}
                 </Link>
+              ) : item.href.startsWith('http') ? (
+                <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity">
+                  {item.label}
+                </a>
               ) : (
                 <Link key={item.href} href={item.href} className="hover:opacity-75 transition-opacity">
                   {item.label}
@@ -130,6 +134,17 @@ export default function MobileHeader({
                     >
                       {item.label}
                     </Link>
+                  ) : item.href.startsWith('http') ? (
+                    <a 
+                      key={item.href}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-sm hover:opacity-75 transition-opacity"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </a>
                   ) : (
                     <Link 
                       key={item.href}
