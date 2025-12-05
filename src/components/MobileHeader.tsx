@@ -22,7 +22,6 @@ export default function MobileHeader({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuItems = [
-    { href: 'https://ai-wardrobe-sigma.vercel.app/', label: 'WARDROBE AI', current: currentPage === 'wardrobe' },
     { href: '/wishlist', label: 'MY WISHLIST', current: currentPage === 'wishlist' },
     { href: '/contact', label: 'CONTACT US', current: currentPage === 'contact' },
     { href: '/demo', label: 'DEMO', current: currentPage === 'demo' },

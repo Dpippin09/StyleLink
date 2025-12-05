@@ -194,7 +194,6 @@ export default function CartPage() {
             </div>
             
             <div className="flex items-center space-x-2 sm:space-x-6 text-xs sm:text-sm">
-              <a href="https://ai-wardrobe-sigma.vercel.app/" target="_blank" rel="noopener noreferrer" className="hidden md:inline hover:opacity-75 transition-opacity">WARDROBE AI</a>
               <Link href="/wishlist" className="hover:opacity-75 transition-opacity">
                 <span className="hidden sm:inline">MY WISHLIST</span>
                 <span className="sm:hidden">WISHLIST</span>
