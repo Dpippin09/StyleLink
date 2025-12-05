@@ -22,7 +22,7 @@ function createPrismaClient(): PrismaClient | null {
     return null
   }
 
-  // In production (Vercel), if DATABASE_URL is not set, return null
+  // Always try to use database in development
   if (!process.env.DATABASE_URL) {
     if (process.env.NODE_ENV === 'production') {
       console.log('Production mode: DATABASE_URL not found, using mock data fallbacks')
@@ -33,8 +33,9 @@ function createPrismaClient(): PrismaClient | null {
   }
 
   try {
+    console.log('✅ Connecting to database...')
     return new PrismaClientConstructor({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : [],
+      log: process.env.NODE_ENV === 'development' ? ['info'] : [],
     })
   } catch (error) {
     console.error('Failed to create Prisma client:', error)
