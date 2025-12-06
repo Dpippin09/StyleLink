@@ -8,7 +8,7 @@ export interface ExternalProduct {
   currency: string
   imageUrl?: string
   productUrl: string
-  platform: 'ebay' | 'walmart' | 'amazon' | 'google'
+  platform: 'ebay' | 'walmart' | 'amazon' | 'google' | 'etsy'
   brand?: string
   category?: string
   condition?: 'new' | 'used' | 'refurbished'
@@ -75,6 +75,11 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
     enabled: false, // Requires Google Shopping API setup
     baseUrl: 'https://www.googleapis.com/customsearch/v1',
     rateLimitMs: 1000,
+  },
+  etsy: {
+    enabled: true,
+    baseUrl: 'https://openapi.etsy.com/v3/application/listings/active',
+    rateLimitMs: 1500, // Etsy has stricter rate limits
   }
 }
 
@@ -103,5 +108,13 @@ export const CLOTHING_CATEGORIES = {
     'jeans': 'Fashion',
     'jackets': 'Fashion',
     'accessories': 'Fashion'
+  },
+  etsy: {
+    'dresses': 'Clothing/Womens Clothing/Dresses',
+    'tops': 'Clothing/Womens Clothing/Tops & Tees',
+    'shoes': 'Shoes/Womens Shoes',
+    'jeans': 'Clothing/Womens Clothing/Pants',
+    'jackets': 'Clothing/Womens Clothing/Jackets & Coats',
+    'accessories': 'Accessories'
   }
 }

@@ -2,10 +2,11 @@ import { searchEbay } from './ebay-search'
 import { searchWalmart } from './walmart-search'
 import { searchAmazon } from './amazon-search'
 import { searchGoogle } from './google-search'
+import { searchEtsy } from './etsy-search'
 import { MultiPlatformSearchResponse, ExternalProduct } from './external-search'
 
 export interface SearchOptions {
-  platforms?: ('ebay' | 'walmart' | 'amazon' | 'google')[]
+  platforms?: ('ebay' | 'walmart' | 'amazon' | 'google' | 'etsy')[]
   category?: string
   maxResultsPerPlatform?: number
   sortBy?: 'price' | 'relevance' | 'rating'
@@ -23,7 +24,7 @@ export async function searchMultiplePlatforms(
   const startTime = Date.now()
   
   const {
-    platforms = ['ebay', 'walmart', 'amazon', 'google'],
+    platforms = ['ebay', 'walmart', 'amazon', 'google', 'etsy'],
     category,
     maxResultsPerPlatform = 10,
     sortBy = 'price',
@@ -43,6 +44,8 @@ export async function searchMultiplePlatforms(
             return await searchAmazon(query, category, maxResultsPerPlatform)
           case 'google':
             return await searchGoogle(query, category, maxResultsPerPlatform)
+          case 'etsy':
+            return await searchEtsy(query, category, maxResultsPerPlatform)
           default:
             throw new Error(`Unknown platform: ${platform}`)
         }

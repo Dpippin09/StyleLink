@@ -9,14 +9,14 @@ StyleLink now includes powerful external API endpoints for searching clothing de
 **Endpoint:** `/api/search/external`  
 **Method:** `GET`
 
-Search for clothing products across eBay, Walmart, Amazon, and Google Shopping.
+Search for clothing products across eBay, Walmart, Amazon, Google Shopping, and Etsy.
 
 #### Query Parameters
 
 | Parameter | Type | Description | Example |
 |-----------|------|-------------|---------|
 | `q` or `query` | string | Search query (required) | `shirt`, `running shoes` |
-| `platforms` | string | Comma-separated platforms to search | `ebay,walmart,amazon` |
+| `platforms` | string | Comma-separated platforms to search | `ebay,walmart,amazon,etsy` |
 | `category` | string | Product category | `dresses`, `shoes`, `jeans` |
 | `maxResults` | number | Max results per platform (default: 10) | `20` |
 | `sortBy` | string | Sort order: `price`, `relevance`, `rating` | `price` |
@@ -30,7 +30,7 @@ Search for clothing products across eBay, Walmart, Amazon, and Google Shopping.
 GET /api/search/external?q=shirt
 
 # Search specific platforms with price range
-GET /api/search/external?q=running+shoes&platforms=amazon,walmart&minPrice=20&maxPrice=100
+GET /api/search/external?q=running+shoes&platforms=amazon,walmart,etsy&minPrice=20&maxPrice=100
 
 # Search with category and sort
 GET /api/search/external?q=dress&category=dresses&sortBy=price&maxResults=15
@@ -144,6 +144,7 @@ GET /api/search/deals?type=rated&limit=8
 - ✅ **Walmart** - Using Walmart Open API (with mock fallback)  
 - ✅ **Amazon** - Product Advertising API 5.0 (mock implementation)
 - ✅ **Google Shopping** - Custom Search API (mock implementation)
+- ✅ **Etsy** - Etsy API v3 (with mock fallback)
 
 ### API Keys Required
 
@@ -164,6 +165,9 @@ AMAZON_PARTNER_TAG=your_associate_id
 # Google (https://developers.google.com/custom-search/)
 GOOGLE_API_KEY=your_google_api_key
 GOOGLE_SEARCH_ENGINE_ID=your_search_engine_id
+
+# Etsy (https://developers.etsy.com/)
+ETSY_API_KEY=your_etsy_api_key
 ```
 
 ## Features
@@ -219,7 +223,7 @@ const getDailyDeals = async () => {
 
 ```bash
 # Test external search
-curl "http://localhost:3000/api/search/external?q=shirt&platforms=walmart,amazon"
+curl "http://localhost:3000/api/search/external?q=shirt&platforms=walmart,amazon,etsy"
 
 # Test deals API
 curl "http://localhost:3000/api/search/deals?type=discounts&limit=5"

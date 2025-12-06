@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     
     // Get search results from all platforms
     const searchResults = await searchMultiplePlatforms(query, {
-      platforms: ['ebay', 'walmart', 'amazon', 'google'],
+      platforms: ['ebay', 'walmart', 'amazon', 'google', 'etsy'],
       maxResultsPerPlatform: 25 // Get more results to find better deals
     })
     
