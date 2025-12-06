@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useSearch, type Product } from '@/hooks/useSearch';
 import MobileHeader from '@/components/MobileHeader';
 import Footer from '@/components/Footer';
+import SearchWithSuggestions from '@/components/SearchWithSuggestions';
 
 function SearchResults() {
   const searchParams = useSearchParams();
@@ -127,9 +128,33 @@ function SearchResults() {
 
             {/* Results */}
             {filteredAndSortedResults.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-xl text-muted-foreground mb-2">No products found</p>
-                <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+              <div className="text-center py-12 space-y-6">
+                <div>
+                  <p className="text-xl text-muted-foreground mb-2">No products found</p>
+                  <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+                </div>
+                
+                {/* Search Again Section */}
+                <div className="max-w-md mx-auto space-y-4">
+                  <h3 className="text-lg font-medium text-foreground">Try a new search</h3>
+                  <SearchWithSuggestions placeholder="Search for different products..." />
+                </div>
+                
+                {/* Popular Search Suggestions */}
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">Popular searches:</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {['shirts', 'dresses', 'jeans', 'sneakers', 'jackets'].map((term) => (
+                      <Link
+                        key={term}
+                        href={`/search?q=${encodeURIComponent(term)}`}
+                        className="px-3 py-1 bg-secondary hover:bg-secondary/80 rounded-full text-sm text-foreground transition-colors"
+                      >
+                        {term}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
             ) : (
               <div className={viewMode === 'grid' 
