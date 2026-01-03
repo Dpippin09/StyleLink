@@ -4,15 +4,6 @@ import { hashPassword, generateToken, setAuthCookie } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if prisma is available
-    if (!prisma) {
-      console.error('Register error: Database not available')
-      return NextResponse.json(
-        { error: 'Database connection not available' },
-        { status: 503 }
-      )
-    }
-
     const { email, password, name } = await request.json()
 
     if (!email || !password || !name) {
@@ -22,7 +13,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if user already exists
+    // Check if prisma is available
+    if (!prisma) {
+      console.log('Database not available, registration disabled')
+      return NextResponse.json(
+        { error: 'Registration is currently unavailable. Please try the demo account: demo@stylelink.com / demo123' },
+        { status: 503 }
+      )
+    }
+
+    // Database is available, proceed with normal registration
     const existingUser = await prisma.user.findUnique({
       where: { email }
     })
