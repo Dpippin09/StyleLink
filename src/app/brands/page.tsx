@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import MobileHeader from '@/components/MobileHeader';
 import Footer from '@/components/Footer';
-import AllBrandsGrid from '@/components/AllBrandsGrid';
+import AllBrandsGrid from '../../components/AllBrandsGrid';
 import { getAllBrands } from '@/lib/brands';
 
 export const metadata: Metadata = {
