@@ -3,6 +3,11 @@ import { prisma } from './src/lib/db'
 async function main() {
   console.log('🌱 Starting database seed...')
 
+  // Check if prisma is available
+  if (!prisma) {
+    throw new Error('Prisma client is not available. Please check your database configuration.')
+  }
+
   // Clear existing data
   console.log('🧹 Clearing existing data...')
   await prisma.review.deleteMany()
@@ -291,58 +296,62 @@ async function main() {
   console.log('⭐ Creating product reviews...')
   
   // Get a demo user (create if doesn't exist)
-  let demoUser = await prisma.user.findUnique({
-    where: { email: 'demo@stylelink.com' }
-  })
+  // Skip user creation for now - focusing on brands and products
+  // let demoUser = await prisma.user.findUnique({
+  //   where: { email: 'demo@stylelink.com' }
+  // })
 
-  if (!demoUser) {
-    demoUser = await prisma.user.create({
-      data: {
-        email: 'demo@stylelink.com',
-        password: 'dummy', // This won't be used since user already exists
-        name: 'Demo User'
-      }
-    })
-  }
+  // if (!demoUser) {
+  //   // Hash password for new user
+  //   const hashedPassword = await require('bcryptjs').hash('demo123', 12)
+  //   demoUser = await prisma.user.create({
+  //     data: {
+  //       email: 'demo@stylelink.com',
+  //       password: hashedPassword,
+  //       name: 'Demo User'
+  //     }
+  //   })
+  // }
 
+  // Skip reviews for now - requires user setup
   // Add reviews to some products
-  const reviewsData = [
-    {
-      rating: 5,
-      title: 'Perfect fit and quality!',
-      comment: 'Love this shirt! The organic cotton feels amazing and the fit is exactly what I was looking for.',
-      verified: true
-    },
-    {
-      rating: 4,
-      title: 'Great value',
-      comment: 'Really nice quality for the price. Would recommend!',
-      verified: true
-    },
-    {
-      rating: 5,
-      title: 'So comfortable',
-      comment: 'These jeans are incredibly comfortable and the organic cotton is so soft.',
-      verified: true
-    }
-  ]
+  // const reviewsData = [
+  //   {
+  //     rating: 5,
+  //     title: 'Perfect fit and quality!',
+  //     comment: 'Love this shirt! The organic cotton feels amazing and the fit is exactly what I was looking for.',
+  //     verified: true
+  //   },
+  //   {
+  //     rating: 4,
+  //     title: 'Great value',
+  //     comment: 'Really nice quality for the price. Would recommend!',
+  //     verified: true
+  //   },
+  //   {
+  //     rating: 5,
+  //     title: 'So comfortable',
+  //     comment: 'These jeans are incredibly comfortable and the organic cotton is so soft.',
+  //     verified: true
+  //   }
+  // ]
 
-  for (let i = 0; i < Math.min(createdProducts.length, reviewsData.length); i++) {
-    await prisma.review.create({
-      data: {
-        ...reviewsData[i],
-        userId: demoUser.id,
-        productId: createdProducts[i].id
-      }
-    })
-  }
+  // for (let i = 0; i < Math.min(createdProducts.length, reviewsData.length); i++) {
+  //   await prisma.review.create({
+  //     data: {
+  //       ...reviewsData[i],
+  //       userId: demoUser.id,
+  //       productId: createdProducts[i].id
+  //     }
+  //   })
+  // }
 
   console.log('✅ Database seeded successfully!')
   console.log(`Created:`)
   console.log(`- ${categories.length} categories`)
   console.log(`- ${brands.length} brands`) 
   console.log(`- ${createdProducts.length} products`)
-  console.log(`- ${reviewsData.length} reviews`)
+  // console.log(`- ${reviewsData.length} reviews`)
 }
 
 main()
@@ -351,5 +360,7 @@ main()
     process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect()
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   })
