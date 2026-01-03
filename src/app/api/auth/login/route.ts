@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { verifyPassword, generateToken, setAuthCookie } from '@/lib/auth'
+import jwt from 'jsonwebtoken'
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,7 +55,6 @@ export async function POST(request: NextRequest) {
           console.log('Generating JWT token...')
           // Generate token for demo user with fallback JWT secret
           const jwtSecret = process.env.JWT_SECRET || 'fallback-demo-secret-for-stylelink-2024'
-          const jwt = require('jsonwebtoken')
           const token = jwt.sign({
             userId: mockUser.id,
             email: mockUser.email
@@ -82,8 +82,12 @@ export async function POST(request: NextRequest) {
           console.log('Cookie set successfully, returning response')
           return response
           
-        } catch (tokenError) {
+        } catch (tokenError: any) {
           console.error('Error in demo token generation:', tokenError)
+          console.error('Token error details:', {
+            message: tokenError.message,
+            stack: tokenError.stack
+          })
           return NextResponse.json(
             { error: 'Authentication processing error' },
             { status: 500 }
@@ -152,8 +156,13 @@ export async function POST(request: NextRequest) {
       user: userWithoutPassword
     })
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login error:', error)
+    console.error('Login error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
