@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/db'
 import { verifyPassword, generateToken, setAuthCookie } from '@/lib/auth'
-
-const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if prisma is available
+    if (!prisma) {
+      console.error('Login error: Database not available')
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 503 }
+      )
+    }
+
     const { email, password } = await request.json()
 
     if (!email || !password) {
@@ -17,11 +24,11 @@ export async function POST(request: NextRequest) {
 
     // Find user by email
     const user = await prisma.user.findUnique({
-      where: { email },
-      include: { profile: true }
-    })
+      where: { email }
+    }) as any  // Type assertion to access password field
 
     if (!user) {
+      console.log(`Login attempt failed: User not found for email ${email}`)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -29,13 +36,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify password
-    const isPasswordValid = await verifyPassword(password, (user as any).password)
+    const isPasswordValid = await verifyPassword(password, user.password)
     if (!isPasswordValid) {
+      console.log(`Login attempt failed: Invalid password for email ${email}`)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
       )
     }
+
+    // Get user profile separately
+    const userProfile = await prisma.profile.findUnique({
+      where: { userId: user.id }
+    })
 
     // Generate token
     const token = generateToken({
@@ -54,7 +67,7 @@ export async function POST(request: NextRequest) {
       image: user.image,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-      profile: user.profile
+      profile: userProfile
     }
 
     return NextResponse.json({
