@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import SearchWithSuggestions from '@/components/SearchWithSuggestions';
+import { createApiUrl } from '@/lib/api';
 
 interface WishlistItem {
   id: string;
@@ -44,7 +45,7 @@ function ProfilePage() {
       
       setLoadingData(true);
       try {
-        const response = await fetch('/api/user/wishlist');
+        const response = await fetch(createApiUrl('/api/user/wishlist'));
         if (response.ok) {
           const data = await response.json();
           setWishlistItems(data.wishlistItems || []);

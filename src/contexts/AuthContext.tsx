@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { User, Profile } from '@prisma/client'
+import { createApiUrl } from '@/lib/api'
 
 export interface AuthUser extends User {
   profile?: Profile | null
@@ -30,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch('/api/auth/me', {
+      const response = await fetch(createApiUrl('/api/auth/me'), {
         credentials: 'include',
       })
       
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(createApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -69,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (email: string, password: string, name: string) => {
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(createApiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),
@@ -91,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
+      await fetch(createApiUrl('/api/auth/logout'), {
         method: 'POST',
         credentials: 'include',
       })
@@ -110,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateProfile = async (profileData: Partial<Profile>) => {
     try {
-      const response = await fetch('/api/auth/profile', {
+      const response = await fetch(createApiUrl('/api/auth/profile'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileData),
