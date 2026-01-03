@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, ShoppingBag, Menu, X } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Menu, X, User, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MobileHeaderProps {
   currentPage?: string;
@@ -20,12 +21,24 @@ export default function MobileHeader({
   cartCount = 0 
 }: MobileHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setIsMobileMenuOpen(false);
+  };
 
   const menuItems = [
     { href: '/wishlist', label: 'MY WISHLIST', current: currentPage === 'wishlist' },
     { href: '/contact', label: 'CONTACT US', current: currentPage === 'contact' },
     { href: '/demo', label: 'DEMO', current: currentPage === 'demo' },
-    { href: '/auth', label: 'LOG IN', current: currentPage === 'auth' }
+    ...(user 
+      ? [
+          { href: '/user-profile', label: 'PROFILE', current: currentPage === 'profile' },
+          { href: '#', label: 'LOGOUT', current: false, onClick: handleLogout }
+        ]
+      : [{ href: '/auth', label: 'LOG IN', current: currentPage === 'auth' }]
+    )
   ];
 
   const isHomePage = currentPage === 'home';
@@ -70,6 +83,11 @@ export default function MobileHeader({
                 <Link key={item.href} href={item.href} className="bg-white/20 text-white px-3 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
                   {item.label}
                 </Link>
+              ) : item.onClick ? (
+                <button key={item.href} onClick={item.onClick} className="hover:opacity-75 transition-opacity flex items-center gap-1">
+                  <LogOut className="w-4 h-4" />
+                  {item.label}
+                </button>
               ) : item.href.startsWith('http') ? (
                 <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity">
                   {item.label}
@@ -89,6 +107,12 @@ export default function MobileHeader({
                   </span>
                 )}
               </Link>
+            )}
+            {user && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full">
+                <User className="w-4 h-4" />
+                <span className="text-sm">{user.name || 'User'}</span>
+              </div>
             )}
           </div>
 
@@ -118,6 +142,12 @@ export default function MobileHeader({
         {isMobileMenuOpen && (
           <div className="md:hidden absolute left-0 right-0 top-full bg-[var(--header-bg)] border-t border-white/20 z-50 shadow-lg">
             <div className="container mx-auto px-4 py-4">
+              {user && (
+                <div className="flex items-center gap-2 px-3 py-2 mb-4 bg-white/20 rounded-lg">
+                  <User className="w-4 h-4" />
+                  <span className="text-sm">{user.name || 'User'}</span>
+                </div>
+              )}
               <nav className="space-y-4">
                 {menuItems.map((item) => (
                   item.current ? (
@@ -133,6 +163,18 @@ export default function MobileHeader({
                     >
                       {item.label}
                     </Link>
+                  ) : item.onClick ? (
+                    <button
+                      key={item.href}
+                      onClick={() => {
+                        item.onClick?.();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block text-sm hover:opacity-75 transition-opacity flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      {item.label}
+                    </button>
                   ) : item.href.startsWith('http') ? (
                     <a 
                       key={item.href}

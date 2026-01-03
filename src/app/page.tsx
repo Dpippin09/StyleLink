@@ -5,8 +5,8 @@ import HeroCarousel from '@/components/HeroCarousel';
 import SearchWithSuggestions from '@/components/SearchWithSuggestions';
 import MobileHeader from '@/components/MobileHeader';
 import Footer from '@/components/Footer';
-import FeaturedProducts from '@/components/FeaturedProducts';
-import { getProducts } from '@/lib/products';
+import FeaturedBrands from '@/components/FeaturedBrands';
+import { getFeaturedBrands } from '@/lib/brands';
 
 // Mock popular searches
 const popularSearches = [
@@ -17,9 +17,9 @@ const popularSearches = [
 ];
 
 export default async function Home() {
-  // Fetch featured products from database
-  const productsResponse = await getProducts({ limit: 8 });
-  const featuredProducts = productsResponse.success ? productsResponse.data : [];
+  // Fetch featured brands from database
+  const brandsResponse = await getFeaturedBrands(8);
+  const featuredBrands = brandsResponse.success ? brandsResponse.data : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,95 +75,9 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        
-        {/* Style Inspiration Section */}
-        <div className="mt-16 sm:mt-24 mb-16 sm:mb-20 px-4">
-          <div className="text-center mb-8 sm:mb-12">
-            <h3 className="text-2xl sm:text-3xl font-bold text-primary mb-4">Find Your Style Inspiration</h3>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-              Discover the looks that inspire you, then find the perfect pieces to make them your own
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-            {/* Inspiration Card 1 */}
-            <div className="group cursor-pointer">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br from-pink-50 to-purple-100 mb-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-200/20 to-purple-200/20" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/90 backdrop-blur rounded-lg p-3">
-                    <h4 className="font-semibold text-primary text-sm">Effortless Chic</h4>
-                    <p className="text-xs text-muted-foreground">Oversized shirts & statement accessories</p>
-                  </div>
-                </div>
-              </div>
-              <button className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-                Shop This Look
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
 
-            {/* Inspiration Card 2 */}
-            <div className="group cursor-pointer">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-indigo-100 mb-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-200/20 to-indigo-200/20" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/90 backdrop-blur rounded-lg p-3">
-                    <h4 className="font-semibold text-primary text-sm">Modern Minimalism</h4>
-                    <p className="text-xs text-muted-foreground">Clean lines & neutral tones</p>
-                  </div>
-                </div>
-              </div>
-              <button className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-                Shop This Look
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Inspiration Card 3 */}
-            <div className="group cursor-pointer">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br from-green-50 to-emerald-100 mb-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-200/20 to-emerald-200/20" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-white/90 backdrop-blur rounded-lg p-3">
-                    <h4 className="font-semibold text-primary text-sm">Timeless Elegance</h4>
-                    <p className="text-xs text-muted-foreground">Perfect layering & classic pieces</p>
-                  </div>
-                </div>
-              </div>
-              <button className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-                Shop This Look
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        {/* Product Preview Section */}
-        <div className="mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Product placeholders matching the bottom of your image */}
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="group cursor-pointer">
-                <div className="aspect-[3/4] bg-secondary rounded-lg overflow-hidden mb-3">
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                    <p className="text-xs">Product {item}</p>
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-sm font-medium text-primary group-hover:underline underline-offset-2">
-                    Product Title {item}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">Brand Name</p>
-                  <p className="text-sm font-semibold text-primary">$299</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Featured Products Section */}
-        <FeaturedProducts products={featuredProducts} />
+        {/* Featured Brands Section */}
+        <FeaturedBrands brands={featuredBrands} />
       </main>
       
       <Footer />

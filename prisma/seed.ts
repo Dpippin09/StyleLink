@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -208,10 +209,12 @@ async function main() {
   }
 
   // Create a sample user
+  const hashedPassword = await bcrypt.hash('demo123', 12)
   const sampleUser = await prisma.user.create({
     data: {
       email: 'demo@stylelink.com',
       name: 'Demo User',
+      password: hashedPassword,
       image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200'
     }
   })
