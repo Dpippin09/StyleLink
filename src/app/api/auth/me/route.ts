@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/db'
 import { getCurrentUser } from '@/lib/auth'
-
-const prisma = new PrismaClient()
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if prisma is available
+    if (!prisma) {
+      console.error('Get user error: Database not available')
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 503 }
+      )
+    }
+
     const currentUser = await getCurrentUser()
     
     if (!currentUser) {

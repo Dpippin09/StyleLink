@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/db'
 import { getCurrentUser } from '@/lib/auth'
-
-const prisma = new PrismaClient()
 
 export async function PUT(request: NextRequest) {
   try {
+    // Check if prisma is available
+    if (!prisma) {
+      console.error('Profile update error: Database not available')
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 503 }
+      )
+    }
+
     const currentUser = await getCurrentUser()
     
     if (!currentUser) {

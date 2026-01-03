@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/db'
 import { hashPassword, generateToken, setAuthCookie } from '@/lib/auth'
-
-const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if prisma is available
+    if (!prisma) {
+      console.error('Register error: Database not available')
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 503 }
+      )
+    }
+
     const { email, password, name } = await request.json()
 
     if (!email || !password || !name) {
