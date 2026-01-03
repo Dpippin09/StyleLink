@@ -6,10 +6,13 @@ export async function POST(request: NextRequest) {
   try {
     console.log('Login endpoint called, NODE_ENV:', process.env.NODE_ENV)
     console.log('Prisma available:', !!prisma)
+    console.log('JWT_SECRET available:', !!process.env.JWT_SECRET)
     
     const { email, password } = await request.json()
+    console.log('Login attempt for email:', email)
 
     if (!email || !password) {
+      console.log('Missing email or password')
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
@@ -22,7 +25,8 @@ export async function POST(request: NextRequest) {
       
       // Demo authentication for production when database is not available
       if (email === 'demo@stylelink.com' && password === 'demo123') {
-        console.log('Demo authentication successful')
+        console.log('Demo credentials match, proceeding with authentication')
+        
         const mockUser = {
           id: 'demo-user-id',
           email: 'demo@stylelink.com',
@@ -47,30 +51,46 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-          // Generate token for demo user
-          const token = generateToken({
+          console.log('Generating JWT token...')
+          // Generate token for demo user with fallback JWT secret
+          const jwtSecret = process.env.JWT_SECRET || 'fallback-demo-secret-for-stylelink-2024'
+          const jwt = require('jsonwebtoken')
+          const token = jwt.sign({
             userId: mockUser.id,
             email: mockUser.email
-          })
+          }, jwtSecret, { expiresIn: '7d' })
           console.log('Token generated successfully')
 
-          // Set cookie
-          await setAuthCookie(token)
-          console.log('Cookie set successfully')
-
-          return NextResponse.json({
+          console.log('Setting authentication cookie...')
+          // Create response with cookie
+          const response = NextResponse.json({
             success: true,
             user: mockUser
           })
+
+          // Set cookie manually for better control
+          response.cookies.set({
+            name: 'auth-token',
+            value: token,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 7, // 7 days
+            path: '/'
+          })
+          
+          console.log('Cookie set successfully, returning response')
+          return response
+          
         } catch (tokenError) {
           console.error('Error in demo token generation:', tokenError)
           return NextResponse.json(
-            { error: 'Authentication error' },
+            { error: 'Authentication processing error' },
             { status: 500 }
           )
         }
       } else {
-        console.log('Invalid demo credentials provided')
+        console.log('Invalid demo credentials provided:', { email, password: password.substring(0, 3) + '...' })
         return NextResponse.json(
           { error: 'Invalid email or password' },
           { status: 401 }
