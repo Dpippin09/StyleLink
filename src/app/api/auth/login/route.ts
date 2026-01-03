@@ -4,6 +4,9 @@ import { verifyPassword, generateToken, setAuthCookie } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Login endpoint called, NODE_ENV:', process.env.NODE_ENV)
+    console.log('Prisma available:', !!prisma)
+    
     const { email, password } = await request.json()
 
     if (!email || !password) {
@@ -19,6 +22,7 @@ export async function POST(request: NextRequest) {
       
       // Demo authentication for production when database is not available
       if (email === 'demo@stylelink.com' && password === 'demo123') {
+        console.log('Demo authentication successful')
         const mockUser = {
           id: 'demo-user-id',
           email: 'demo@stylelink.com',
@@ -42,20 +46,31 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Generate token for demo user
-        const token = generateToken({
-          userId: mockUser.id,
-          email: mockUser.email
-        })
+        try {
+          // Generate token for demo user
+          const token = generateToken({
+            userId: mockUser.id,
+            email: mockUser.email
+          })
+          console.log('Token generated successfully')
 
-        // Set cookie
-        await setAuthCookie(token)
+          // Set cookie
+          await setAuthCookie(token)
+          console.log('Cookie set successfully')
 
-        return NextResponse.json({
-          success: true,
-          user: mockUser
-        })
+          return NextResponse.json({
+            success: true,
+            user: mockUser
+          })
+        } catch (tokenError) {
+          console.error('Error in demo token generation:', tokenError)
+          return NextResponse.json(
+            { error: 'Authentication error' },
+            { status: 500 }
+          )
+        }
       } else {
+        console.log('Invalid demo credentials provided')
         return NextResponse.json(
           { error: 'Invalid email or password' },
           { status: 401 }
@@ -63,6 +78,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    console.log('Database available, using normal authentication')
     // Database is available, use normal authentication
     const user = await prisma.user.findUnique({
       where: { email }

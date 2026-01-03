@@ -4,9 +4,13 @@ import { getCurrentUser } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('Me endpoint called')
+    
     const currentUser = await getCurrentUser()
+    console.log('Current user from token:', currentUser)
     
     if (!currentUser) {
+      console.log('No current user found, returning 401')
       return NextResponse.json(
         { error: 'Not authenticated' },
         { status: 401 }
@@ -42,8 +46,10 @@ export async function GET(request: NextRequest) {
           }
         }
         
+        console.log('Returning demo user data')
         return NextResponse.json(mockUser)
       } else {
+        console.log('User not demo user, returning 404')
         return NextResponse.json(
           { error: 'User not found' },
           { status: 404 }
@@ -51,6 +57,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    console.log('Database available, fetching user from database')
     // Database is available, get user data from database
     const user = await prisma.user.findUnique({
       where: { id: currentUser.userId },
@@ -58,12 +65,14 @@ export async function GET(request: NextRequest) {
     })
 
     if (!user) {
+      console.log('User not found in database')
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
 
+    console.log('User found in database, returning user data')
     // Return user data (without password)
     const userWithoutPassword = {
       id: user.id,
