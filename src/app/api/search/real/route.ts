@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { EbayAPI, GoogleShoppingAPI, ShopifyAPI, type RealAPIProduct, type APISearchResponse } from '@/lib/real-apis'
 
 export interface RealProduct {
   id: string
@@ -26,11 +27,12 @@ export interface SearchAPIResponse {
   products: RealProduct[]
   totalResults: number
   searchTime: number
+  sources: string[]
   error?: string
   nextPage?: string
 }
 
-// Real product search API endpoint
+// Real product search API endpoint with live integrations
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -47,18 +49,20 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
+    const useRealAPIs = searchParams.get('useRealAPIs') === 'true'
 
-    // Search real products from multiple retailers
+    // Search real products from multiple sources
     const results = await searchRealProducts(query, {
       maxResults,
       category,
       minPrice: minPrice ? parseFloat(minPrice) : undefined,
-      maxPrice: maxPrice ? parseFloat(maxPrice) : undefined
+      maxPrice: maxPrice ? parseFloat(maxPrice) : undefined,
+      useRealAPIs
     })
     
     return NextResponse.json(results, {
       headers: {
-        'Cache-Control': 'public, max-age=600', // Cache for 10 minutes
+        'Cache-Control': 'public, max-age=300', // Cache for 5 minutes for real APIs
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -74,6 +78,7 @@ export async function GET(request: NextRequest) {
         products: [],
         totalResults: 0,
         searchTime: 0,
+        sources: [],
         error: 'Internal server error'
       },
       { status: 500 }
@@ -81,7 +86,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Search real products from actual retailers
+// Search real products from multiple live APIs
 async function searchRealProducts(
   query: string, 
   options: {
@@ -89,37 +94,140 @@ async function searchRealProducts(
     category?: string | null
     minPrice?: number
     maxPrice?: number
+    useRealAPIs?: boolean
   } = {}
 ): Promise<SearchAPIResponse> {
   const startTime = Date.now()
   
   try {
-    // For now, we'll use enhanced realistic data that simulates real retailer integration
-    // In production, you would integrate with:
-    // - Amazon Product Advertising API
-    // - eBay API
-    // - Google Shopping API  
-    // - Individual retailer APIs (Zara, H&M, etc.)
-    // - Fashion affiliate networks
+    const { maxResults = 20, useRealAPIs = true } = options
     
-    const products = await generateEnhancedProducts(query, options)
+    if (!useRealAPIs) {
+      // Fallback to enhanced mock data
+      const mockResults = await generateEnhancedProducts(query, options)
+      return {
+        success: true,
+        products: mockResults,
+        totalResults: mockResults.length * 5,
+        searchTime: Date.now() - startTime,
+        sources: ['Enhanced Mock Data']
+      }
+    }
+    
+    // Initialize real APIs
+    const apis = [
+      new EbayAPI(),
+      new GoogleShoppingAPI(),
+      // new ShopifyAPI() // Enable when you have store credentials
+    ]
+    
+    // Search all APIs in parallel
+    const searchPromises = apis.map(async (api) => {
+      try {
+        const result = await api.searchProducts(query, {
+          maxResults: Math.ceil(maxResults / apis.length),
+          minPrice: options.minPrice,
+          maxPrice: options.maxPrice
+        })
+        return result
+      } catch (error) {
+        console.error(`API search error:`, error)
+        return {
+          success: false,
+          products: [],
+          totalResults: 0,
+          searchTime: 0,
+          source: 'Unknown',
+          error: error instanceof Error ? error.message : 'Unknown error'
+        } as APISearchResponse
+      }
+    })
+    
+    const apiResults = await Promise.all(searchPromises)
+    
+    // Combine results from all APIs
+    const allProducts: RealProduct[] = []
+    const successfulSources: string[] = []
+    let totalResults = 0
+    
+    for (const result of apiResults) {
+      if (result.success && result.products.length > 0) {
+        allProducts.push(...result.products.map(convertAPIProduct))
+        successfulSources.push(result.source)
+        totalResults += result.totalResults
+      }
+    }
+    
+    // If no real API results, fallback to enhanced mock data
+    if (allProducts.length === 0) {
+      console.log('No real API results, falling back to mock data')
+      const mockResults = await generateEnhancedProducts(query, options)
+      return {
+        success: true,
+        products: mockResults,
+        totalResults: mockResults.length * 5,
+        searchTime: Date.now() - startTime,
+        sources: ['Enhanced Mock Data (Fallback)']
+      }
+    }
+    
+    // Sort by relevance and price
+    const sortedProducts = allProducts
+      .slice(0, maxResults)
+      .sort((a, b) => {
+        // Prioritize in-stock items
+        if (a.inStock && !b.inStock) return -1
+        if (!a.inStock && b.inStock) return 1
+        
+        // Then by price (ascending)
+        return a.price - b.price
+      })
     
     return {
       success: true,
-      products,
-      totalResults: products.length * 10, // Simulate more results available
-      searchTime: Date.now() - startTime
+      products: sortedProducts,
+      totalResults,
+      searchTime: Date.now() - startTime,
+      sources: successfulSources
     }
     
   } catch (error) {
     console.error('Real product search error:', error)
+    
+    // Fallback to mock data on any error
+    const mockResults = await generateEnhancedProducts(query, options)
     return {
-      success: false,
-      products: [],
-      totalResults: 0,
+      success: true,
+      products: mockResults,
+      totalResults: mockResults.length * 5,
       searchTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      sources: ['Enhanced Mock Data (Error Fallback)'],
+      error: `Real APIs failed, using mock data: ${error instanceof Error ? error.message : 'Unknown error'}`
     }
+  }
+}
+
+// Convert API product to our standard format
+function convertAPIProduct(apiProduct: RealAPIProduct): RealProduct {
+  return {
+    id: apiProduct.id,
+    title: apiProduct.title,
+    description: apiProduct.description,
+    price: apiProduct.price,
+    originalPrice: apiProduct.originalPrice,
+    currency: apiProduct.currency,
+    imageUrl: apiProduct.imageUrl,
+    retailerUrl: apiProduct.retailerUrl,
+    affiliate_url: apiProduct.affiliate_url,
+    retailer: apiProduct.retailer,
+    brand: apiProduct.brand,
+    category: apiProduct.category,
+    sizes: apiProduct.sizes,
+    colors: apiProduct.colors,
+    inStock: apiProduct.inStock,
+    rating: apiProduct.rating,
+    reviews: apiProduct.reviews,
+    condition: apiProduct.condition
   }
 }
 

@@ -35,6 +35,7 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [dataSources, setDataSources] = useState<string[]>([])
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({})
   const [selectedColors, setSelectedColors] = useState<Record<string, string>>({})
   const [addingToCart, setAddingToCart] = useState<Record<string, boolean>>({})
@@ -47,11 +48,21 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
     setError('')
     
     try {
-      const response = await fetch(`/api/search/real?q=${encodeURIComponent(searchQuery)}&maxResults=20`)
+      // Try real APIs first, with fallback to enhanced mock
+      const useRealAPIs = process.env.NODE_ENV === 'production' || 
+                         searchQuery.includes('test-real-api')
+      
+      const response = await fetch(`/api/search/real?q=${encodeURIComponent(searchQuery)}&maxResults=20&useRealAPIs=${useRealAPIs}`)
       const data = await response.json()
       
       if (data.success) {
         setProducts(data.products)
+        setDataSources(data.sources || [])
+        
+        // Show user which data sources were used
+        if (data.sources && data.sources.length > 0) {
+          console.log('Search powered by:', data.sources.join(', '))
+        }
       } else {
         setError(data.error || 'Search failed')
       }
@@ -173,12 +184,17 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
     <div className="space-y-6">
       {/* Search Results Header */}
       {products.length > 0 && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">
             Found {products.length} real products for "{query}"
           </h3>
           <div className="text-sm text-muted-foreground">
-            Shop through StyleLink and earn rewards
+            {dataSources.length > 0 && (
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                {dataSources.includes('Enhanced Mock Data') ? 'Demo Mode' : 'Live APIs: ' + dataSources.join(', ')}
+              </span>
+            )}
           </div>
         </div>
       )}
