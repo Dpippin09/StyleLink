@@ -31,12 +31,12 @@ function ProfilePage() {
 
   const categories = ['all', 'Tops', 'Bottoms', 'Dresses', 'Outerwear', 'Shoes'];
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth');
-    }
-  }, [user, loading, router]);
+  // No auth redirect needed in demo mode
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     router.push('/auth');
+  //   }
+  // }, [user, loading, router]);
 
   // Fetch user's wishlist items
   useEffect(() => {

@@ -21,13 +21,37 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [loading, setLoading] = useState(true)
+  // Always provide a default demo user - no authentication required
+  const [user, setUser] = useState<AuthUser | null>({
+    id: 'demo-user-id',
+    email: 'demo@stylelink.com',
+    password: '', // Required by type but not used
+    name: 'Demo User',
+    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    profile: {
+      id: 'demo-profile-id',
+      userId: 'demo-user-id',
+      bio: 'Fashion enthusiast who loves mixing classic pieces with trendy accessories.',
+      location: 'New York, NY',
+      birthDate: null,
+      gender: 'female',
+      styleTypes: 'minimalist,classic,trendy',
+      sizePreference: 'M',
+      colorPreferences: 'black,white,navy,pink',
+      priceRange: 'mid-range',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  })
+  const [loading, setLoading] = useState(false) // No loading needed
   const router = useRouter()
 
-  useEffect(() => {
-    checkAuthStatus()
-  }, [])
+  // No auth check needed in demo mode
+  // useEffect(() => {
+  //   checkAuthStatus()
+  // }, [])
 
   const checkAuthStatus = async () => {
     try {
@@ -47,97 +71,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const login = async (email: string, password: string) => {
-    try {
-      console.log('Login attempt starting...')
-      const apiUrl = createApiUrl('/api/auth/login')
-      console.log('Login URL:', apiUrl)
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
-      })
-
-      console.log('Login response status:', response.status)
-      console.log('Login response headers:', response.headers)
-      
-      const data = await response.json()
-      console.log('Login response data:', data)
-
-      if (response.ok) {
-        setUser(data.user)
-        return { success: true }
-      } else {
-        console.log('Login failed with data:', data)
-        return { success: false, error: data.error || 'Login failed' }
-      }
-    } catch (error) {
-      console.error('Login network error:', error)
-      return { success: false, error: 'Network error. Please try again.' }
-    }
+    // Demo mode - always successful login
+    return { success: true }
   }
 
   const register = async (email: string, password: string, name: string) => {
-    try {
-      const response = await fetch(createApiUrl('/api/auth/register'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setUser(data.user)
-        return { success: true }
-      } else {
-        return { success: false, error: data.error || 'Registration failed' }
-      }
-    } catch (error) {
-      return { success: false, error: 'Network error. Please try again.' }
-    }
+    // Demo mode - always successful registration
+    return { success: true }
   }
 
   const logout = async () => {
-    try {
-      await fetch(createApiUrl('/api/auth/logout'), {
-        method: 'POST',
-        credentials: 'include',
-      })
-    } catch (error) {
-      console.error('Logout error:', error)
-    } finally {
-      setUser(null)
-      // Use router for better UX, fallback to window.location if needed
-      try {
-        router.push('/auth')
-      } catch {
-        window.location.href = '/auth'
-      }
-    }
+    // Demo mode - no actual logout needed
+    return
   }
 
   const updateProfile = async (profileData: Partial<Profile>) => {
+    // Demo mode - update profile locally
     try {
-      const response = await fetch(createApiUrl('/api/auth/profile'), {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileData),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        setUser(data.user)
+      if (user && user.profile) {
+        const updatedUser = {
+          ...user,
+          profile: {
+            ...user.profile,
+            ...profileData,
+            updatedAt: new Date()
+          }
+        }
+        setUser(updatedUser)
         return { success: true }
-      } else {
-        return { success: false, error: data.error || 'Profile update failed' }
       }
+      return { success: false, error: 'No user profile to update' }
     } catch (error) {
-      return { success: false, error: 'Network error. Please try again.' }
+      console.error('Profile update error:', error)
+      return { success: false, error: 'Failed to update profile' }
     }
   }
 

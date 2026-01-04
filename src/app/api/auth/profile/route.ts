@@ -4,54 +4,29 @@ import { getCurrentUser } from '@/lib/auth'
 
 export async function PUT(request: NextRequest) {
   try {
-    // Check if prisma is available
-    if (!prisma) {
-      console.error('Profile update error: Database not available')
-      return NextResponse.json(
-        { error: 'Database connection not available' },
-        { status: 503 }
-      )
-    }
-
-    const currentUser = await getCurrentUser()
-    
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: 'Not authenticated' },
-        { status: 401 }
-      )
-    }
-
+    // Demo mode - always return success with mock data
     const profileData = await request.json()
 
-    // Update or create profile
-    const user = await prisma.user.update({
-      where: { id: currentUser.userId },
-      data: {
-        profile: {
-          upsert: {
-            create: profileData,
-            update: profileData
-          }
-        }
-      },
-      include: { profile: true }
-    })
-
-    // Return user data (without password)
-    const userWithoutPassword = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      image: user.image,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      profile: user.profile
+    // Mock updated user response
+    const mockUser = {
+      id: 'demo-user-id',
+      email: 'demo@stylelink.com',
+      name: 'Demo User',
+      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      profile: {
+        id: 'demo-profile-id',
+        userId: 'demo-user-id',
+        ...profileData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
     }
 
     return NextResponse.json({
       success: true,
-      user: userWithoutPassword
+      user: mockUser
     })
 
   } catch (error) {
