@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Search real products from multiple live APIs
+// Search real products from multiple live APIs - NO MOCK DATA
 async function searchRealProducts(
   query: string, 
   options: {
@@ -100,74 +100,107 @@ async function searchRealProducts(
   const startTime = Date.now()
   
   try {
-    const { maxResults = 20, useRealAPIs = true } = options
+    const { maxResults = 20 } = options
+    
+    // Force real APIs only - no mock fallback
+    const useRealAPIs = process.env.USE_REAL_APIS === 'true'
+    const fallbackToMock = process.env.FALLBACK_TO_MOCK === 'true'
     
     if (!useRealAPIs) {
-      // Fallback to enhanced mock data
-      const mockResults = await generateEnhancedProducts(query, options)
       return {
-        success: true,
-        products: mockResults,
-        totalResults: mockResults.length * 5,
+        success: false,
+        products: [],
+        totalResults: 0,
         searchTime: Date.now() - startTime,
-        sources: ['Enhanced Mock Data']
+        sources: [],
+        error: 'Real APIs disabled. Set USE_REAL_APIS=true in .env.local and add API keys.'
       }
     }
     
-    // Initialize real APIs
-    const apis = [
-      new EbayAPI(),
-      new GoogleShoppingAPI(),
-      // new ShopifyAPI() // Enable when you have store credentials
-    ]
+    // Initialize real APIs with environment variables
+    const ebayAppId = process.env.EBAY_APP_ID
+    const googleApiKey = process.env.GOOGLE_API_KEY
+    const googleCSE = process.env.GOOGLE_CSE_ID
+    
+    const apis = []
+    
+    // Add eBay API if configured
+    if (ebayAppId && ebayAppId !== 'your_actual_ebay_app_id_here') {
+      apis.push(new EbayAPI(ebayAppId))
+    }
+    
+    // Add Google Shopping API if configured
+    if (googleApiKey && googleCSE && 
+        googleApiKey !== 'your_google_api_key_here' && 
+        googleCSE !== 'your_custom_search_engine_id_here') {
+      apis.push(new GoogleShoppingAPI(googleApiKey, googleCSE))
+    }
+    
+    if (apis.length === 0) {
+      return {
+        success: false,
+        products: [],
+        totalResults: 0,
+        searchTime: Date.now() - startTime,
+        sources: [],
+        error: 'No API keys configured. Please add EBAY_APP_ID to .env.local for real product data.'
+      }
+    }
     
     // Search all APIs in parallel
-    const searchPromises = apis.map(async (api) => {
+    const searchPromises = apis.map(async (api, index) => {
       try {
+        console.log(`Searching with API ${index + 1}...`)
         const result = await api.searchProducts(query, {
           maxResults: Math.ceil(maxResults / apis.length),
           minPrice: options.minPrice,
           maxPrice: options.maxPrice
         })
+        console.log(`API ${index + 1} returned ${result.products.length} products`)
         return result
       } catch (error) {
-        console.error(`API search error:`, error)
+        console.error(`API ${index + 1} search error:`, error)
         return {
           success: false,
           products: [],
           totalResults: 0,
           searchTime: 0,
-          source: 'Unknown',
+          source: `API ${index + 1}`,
           error: error instanceof Error ? error.message : 'Unknown error'
         } as APISearchResponse
       }
     })
     
+    console.log(`Searching with ${apis.length} real APIs for: "${query}"`)
     const apiResults = await Promise.all(searchPromises)
     
     // Combine results from all APIs
     const allProducts: RealProduct[] = []
     const successfulSources: string[] = []
     let totalResults = 0
+    let hasErrors: string[] = []
     
     for (const result of apiResults) {
       if (result.success && result.products.length > 0) {
         allProducts.push(...result.products.map(convertAPIProduct))
         successfulSources.push(result.source)
         totalResults += result.totalResults
+        console.log(`✅ ${result.source}: ${result.products.length} products`)
+      } else {
+        hasErrors.push(result.source + ': ' + (result.error || 'No products'))
+        console.log(`❌ ${result.source}: ${result.error || 'No products'}`)
       }
     }
     
-    // If no real API results, fallback to enhanced mock data
+    // Return error if no real products found and fallback disabled
     if (allProducts.length === 0) {
-      console.log('No real API results, falling back to mock data')
-      const mockResults = await generateEnhancedProducts(query, options)
       return {
-        success: true,
-        products: mockResults,
-        totalResults: mockResults.length * 5,
+        success: false,
+        products: [],
+        totalResults: 0,
         searchTime: Date.now() - startTime,
-        sources: ['Enhanced Mock Data (Fallback)']
+        sources: [],
+        error: `No real products found. Errors: ${hasErrors.join('; ')}. Check API keys and network connection.`
       }
     }
     
@@ -183,6 +216,8 @@ async function searchRealProducts(
         return a.price - b.price
       })
     
+    console.log(`✅ Returning ${sortedProducts.length} real products from: ${successfulSources.join(', ')}`)
+    
     return {
       success: true,
       products: sortedProducts,
@@ -194,15 +229,13 @@ async function searchRealProducts(
   } catch (error) {
     console.error('Real product search error:', error)
     
-    // Fallback to mock data on any error
-    const mockResults = await generateEnhancedProducts(query, options)
     return {
-      success: true,
-      products: mockResults,
-      totalResults: mockResults.length * 5,
+      success: false,
+      products: [],
+      totalResults: 0,
       searchTime: Date.now() - startTime,
-      sources: ['Enhanced Mock Data (Error Fallback)'],
-      error: `Real APIs failed, using mock data: ${error instanceof Error ? error.message : 'Unknown error'}`
+      sources: [],
+      error: `Real API search failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please check API keys and try again.`
     }
   }
 }
@@ -229,182 +262,4 @@ function convertAPIProduct(apiProduct: RealAPIProduct): RealProduct {
     reviews: apiProduct.reviews,
     condition: apiProduct.condition
   }
-}
-
-// Generate enhanced realistic products that simulate real retailer data
-async function generateEnhancedProducts(
-  query: string,
-  options: {
-    maxResults?: number
-    category?: string | null
-    minPrice?: number
-    maxPrice?: number
-  } = {}
-): Promise<RealProduct[]> {
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500))
-  
-  const { maxResults = 20, category, minPrice, maxPrice } = options
-  const queryLower = query.toLowerCase()
-  
-  // Real retailer data templates
-  const realRetailers = [
-    {
-      name: 'Amazon',
-      baseUrl: 'https://amazon.com',
-      affiliateParam: '?tag=stylelink-20'
-    },
-    {
-      name: 'Zara',
-      baseUrl: 'https://zara.com',
-      affiliateParam: '?ref=stylelink'
-    },
-    {
-      name: 'H&M',
-      baseUrl: 'https://hm.com',
-      affiliateParam: '?affiliate=stylelink'
-    },
-    {
-      name: 'ASOS',
-      baseUrl: 'https://asos.com',
-      affiliateParam: '?affid=stylelink'
-    },
-    {
-      name: 'Nordstrom',
-      baseUrl: 'https://nordstrom.com',
-      affiliateParam: '?campaign=stylelink'
-    }
-  ]
-  
-  // Enhanced product templates with real-world data structure
-  const productTemplates = [
-    // Shirts & Tops
-    {
-      keywords: ['shirt', 'top', 'blouse', 'tee', 'tank'],
-      items: [
-        {
-          title: 'Classic Cotton Button-Up Shirt',
-          category: 'Tops',
-          priceRange: [29, 89],
-          brands: ['Everlane', 'J.Crew', 'Banana Republic'],
-          images: ['https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=400'],
-          sizes: ['XS', 'S', 'M', 'L', 'XL'],
-          colors: ['White', 'Blue', 'Black', 'Striped']
-        },
-        {
-          title: 'Vintage Graphic T-Shirt',
-          category: 'Tops',
-          priceRange: [18, 45],
-          brands: ['Urban Outfitters', 'Forever 21'],
-          images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400'],
-          sizes: ['S', 'M', 'L', 'XL'],
-          colors: ['Black', 'White', 'Navy', 'Gray']
-        }
-      ]
-    },
-    // Dresses
-    {
-      keywords: ['dress', 'gown', 'sundress', 'maxi'],
-      items: [
-        {
-          title: 'Floral Midi Dress',
-          category: 'Dresses',
-          priceRange: [45, 120],
-          brands: ['Free People', 'Anthropologie', 'Zara'],
-          images: ['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400'],
-          sizes: ['XS', 'S', 'M', 'L'],
-          colors: ['Floral', 'Black', 'Navy']
-        }
-      ]
-    },
-    // Jeans & Pants
-    {
-      keywords: ['jeans', 'denim', 'pants', 'trouser'],
-      items: [
-        {
-          title: 'High-Waist Skinny Jeans',
-          category: 'Bottoms',
-          priceRange: [59, 150],
-          brands: ['Levi\'s', 'AG Jeans', 'Citizens of Humanity'],
-          images: ['https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400'],
-          sizes: ['24', '25', '26', '27', '28', '29', '30'],
-          colors: ['Dark Wash', 'Light Wash', 'Black']
-        }
-      ]
-    },
-    // Shoes
-    {
-      keywords: ['shoes', 'sneakers', 'boots', 'heels', 'sandals'],
-      items: [
-        {
-          title: 'White Leather Sneakers',
-          category: 'Shoes',
-          priceRange: [79, 200],
-          brands: ['Nike', 'Adidas', 'Veja', 'Common Projects'],
-          images: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400'],
-          sizes: ['6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10'],
-          colors: ['White', 'Black', 'Gray']
-        }
-      ]
-    }
-  ]
-  
-  // Find matching products
-  let matchingItems: any[] = []
-  
-  productTemplates.forEach(template => {
-    if (template.keywords.some(keyword => queryLower.includes(keyword))) {
-      matchingItems.push(...template.items)
-    }
-  })
-  
-  // If no specific matches, use all items
-  if (matchingItems.length === 0) {
-    matchingItems = productTemplates.flatMap(t => t.items)
-  }
-  
-  // Generate realistic products
-  const products: RealProduct[] = []
-  
-  for (let i = 0; i < Math.min(maxResults, matchingItems.length * 3); i++) {
-    const template = matchingItems[i % matchingItems.length]
-    const retailer = realRetailers[i % realRetailers.length]
-    const brand = template.brands[Math.floor(Math.random() * template.brands.length)]
-    
-    // Generate realistic price
-    const basePrice = Math.random() * (template.priceRange[1] - template.priceRange[0]) + template.priceRange[0]
-    const price = Math.round(basePrice * 100) / 100
-    const originalPrice = Math.random() > 0.7 ? Math.round(price * 1.4 * 100) / 100 : undefined
-    
-    // Apply price filter
-    if (minPrice && price < minPrice) continue
-    if (maxPrice && price > maxPrice) continue
-    
-    const productId = `real-${retailer.name.toLowerCase()}-${i + 1}`
-    const productSlug = template.title.toLowerCase().replace(/\s+/g, '-')
-    
-    products.push({
-      id: productId,
-      title: `${template.title} - ${brand}`,
-      description: `High-quality ${template.title.toLowerCase()} from ${brand}. Available in multiple sizes and colors.`,
-      price,
-      originalPrice,
-      currency: 'USD',
-      imageUrl: template.images[0],
-      retailerUrl: `${retailer.baseUrl}/products/${productSlug}`,
-      affiliate_url: `${retailer.baseUrl}/products/${productSlug}${retailer.affiliateParam}`,
-      retailer: retailer.name,
-      brand,
-      category: template.category,
-      sizes: template.sizes,
-      colors: template.colors,
-      inStock: Math.random() > 0.1, // 90% chance in stock
-      rating: 3.5 + Math.random() * 1.5, // 3.5 - 5.0 rating
-      reviews: Math.floor(Math.random() * 500) + 10,
-      condition: 'new'
-    })
-  }
-  
-  return products.slice(0, maxResults)
 }

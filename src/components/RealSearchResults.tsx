@@ -40,7 +40,7 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
   const [selectedColors, setSelectedColors] = useState<Record<string, string>>({})
   const [addingToCart, setAddingToCart] = useState<Record<string, boolean>>({})
 
-  // Search for real products
+  // Search for real products ONLY - no mock data
   const searchProducts = async (searchQuery: string) => {
     if (!searchQuery.trim()) return
     
@@ -48,26 +48,23 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
     setError('')
     
     try {
-      // Try real APIs first, with fallback to enhanced mock
-      const useRealAPIs = process.env.NODE_ENV === 'production' || 
-                         searchQuery.includes('test-real-api')
-      
-      const response = await fetch(`/api/search/real?q=${encodeURIComponent(searchQuery)}&maxResults=20&useRealAPIs=${useRealAPIs}`)
+      // Force real APIs only - no mock fallback
+      const response = await fetch(`/api/search/real?q=${encodeURIComponent(searchQuery)}&maxResults=20&useRealAPIs=true`)
       const data = await response.json()
       
-      if (data.success) {
+      if (data.success && data.products.length > 0) {
         setProducts(data.products)
         setDataSources(data.sources || [])
         
-        // Show user which data sources were used
-        if (data.sources && data.sources.length > 0) {
-          console.log('Search powered by:', data.sources.join(', '))
-        }
+        console.log('✅ Real products loaded from:', data.sources.join(', '))
       } else {
-        setError(data.error || 'Search failed')
+        setProducts([])
+        setError(data.error || 'No real products found. Please check API configuration.')
+        console.log('❌ API Error:', data.error)
       }
     } catch (err) {
-      setError('Failed to search products')
+      setProducts([])
+      setError('Failed to fetch real products. Check network and API configuration.')
       console.error('Search error:', err)
     } finally {
       setLoading(false)
@@ -189,10 +186,15 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
             Found {products.length} real products for "{query}"
           </h3>
           <div className="text-sm text-muted-foreground">
-            {dataSources.length > 0 && (
+            {dataSources.length > 0 ? (
               <span className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                {dataSources.includes('Enhanced Mock Data') ? 'Demo Mode' : 'Live APIs: ' + dataSources.join(', ')}
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                Live APIs: {dataSources.join(', ')}
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                No API connection
               </span>
             )}
           </div>
