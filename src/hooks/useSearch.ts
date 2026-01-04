@@ -56,27 +56,20 @@ export function useSearch() {
         return cachedResults[cacheKey];
       }
 
-      // Search both database products and external APIs
-      const [databaseResults, externalResults] = await Promise.all([
-        // Database search
+      // Search both database products and web search API
+      const [databaseResults, webResults] = await Promise.all([
+        // Database search (fallback to empty if fails)
         fetch(`/api/products?search=${encodeURIComponent(query)}`)
           .then(res => res.json())
           .then(data => data.products || [])
           .catch(() => []),
         
-        // External API search
-        fetch(`/api/search/external?q=${encodeURIComponent(query)}&maxResults=20`)
+        // Web search API
+        fetch(`/api/search/web?q=${encodeURIComponent(query)}&maxResults=20`)
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              // Combine all products from different platforms
-              const allExternalProducts: any[] = [];
-              Object.values(data.results).forEach((platformResult: any) => {
-                if (platformResult.success && platformResult.products) {
-                  allExternalProducts.push(...platformResult.products);
-                }
-              });
-              return allExternalProducts.map(convertExternalToProduct);
+              return data.products.map((product: any) => convertExternalToProduct(product));
             }
             return [];
           })
@@ -84,7 +77,7 @@ export function useSearch() {
       ]);
 
       // Combine and deduplicate results
-      const combinedResults = [...databaseResults, ...externalResults];
+      const combinedResults = [...databaseResults, ...webResults];
       
       // Simple deduplication based on title similarity
       const uniqueResults = combinedResults.filter((product, index, self) => {

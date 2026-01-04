@@ -9,45 +9,22 @@ export async function searchGoogle(
   const startTime = Date.now()
   
   try {
-    // Google Custom Search API for shopping results
-    // Requires API Key and Custom Search Engine ID
-    // See: https://developers.google.com/custom-search/v1/overview
-    
-    const apiKey = process.env.GOOGLE_API_KEY
-    const searchEngineId = process.env.GOOGLE_SEARCH_ENGINE_ID
-    
-    if (!apiKey || !searchEngineId) {
-      return searchGoogleMock(query, category, maxResults)
+    // For demo purposes, we'll use enhanced mock data with web search results
+    // In production, you would use Google Custom Search API with API keys
+    return await searchGoogleEnhanced(query, category, maxResults)
+
+  } catch (error) {
+    console.error('Google Search API error:', error)
+    return {
+      success: false,
+      platform: 'google',
+      products: [],
+      error: error instanceof Error ? error.message : 'Unknown error',
+      searchTime: Date.now() - startTime,
+      totalResults: 0
     }
-
-    const baseUrl = 'https://www.googleapis.com/customsearch/v1'
-    const params = new URLSearchParams({
-      'key': apiKey,
-      'cx': searchEngineId,
-      'q': `${query} clothing fashion`,
-      'num': Math.min(maxResults, 10).toString(), // Google allows max 10 per request
-      'searchType': 'image',
-      'gl': 'us', // Country
-      'hl': 'en' // Language
-    })
-
-    // Add category-specific terms
-    if (category) {
-      params.set('q', `${query} ${category} clothing fashion`)
-    }
-
-    const url = `${baseUrl}?${params}`
-    
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      throw new Error(`Google API error: ${response.status}`)
-    }
-
-    const data = await response.json()
-    const items = data.items || []
-    
-    const products: ExternalProduct[] = items.map((item: any, index: number) => ({
+  }
+}{
       id: `google-${index + 1}`,
       title: item.title,
       description: item.snippet,
