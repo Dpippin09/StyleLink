@@ -1,7 +1,7 @@
 import { searchEbay } from './ebay-search'
 import { searchWalmart } from './walmart-search'
 import { searchAmazon } from './amazon-search'
-import { searchGoogle } from './google-search'
+// import { searchGoogle } from './google-search' // Temporarily disabled due to build issues
 import { searchEtsy } from './etsy-search'
 import { MultiPlatformSearchResponse, ExternalProduct } from './external-search'
 
@@ -43,7 +43,15 @@ export async function searchMultiplePlatforms(
           case 'amazon':
             return await searchAmazon(query, category, maxResultsPerPlatform)
           case 'google':
-            return await searchGoogle(query, category, maxResultsPerPlatform)
+            // Temporarily disabled - return empty result
+            return {
+              success: false,
+              platform: 'google',
+              products: [],
+              error: 'Google search temporarily disabled',
+              searchTime: 0,
+              totalResults: 0
+            }
           case 'etsy':
             return await searchEtsy(query, category, maxResultsPerPlatform)
           default:
