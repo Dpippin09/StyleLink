@@ -323,6 +323,24 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
                   {addingToCart[product.id] ? 'Adding...' : 'Add to Cart'}
                 </button>
                 
+                {/* Buy Now Button - Direct to Stripe Checkout */}
+                <button
+                  onClick={() => {
+                    const checkoutUrl = `/checkout?` + new URLSearchParams({
+                      id: product.id,
+                      name: product.title,
+                      price: (product.price * 100).toString(), // Convert to cents for Stripe
+                      retailer: product.retailer,
+                      image: product.imageUrl
+                    }).toString();
+                    window.location.href = checkoutUrl;
+                  }}
+                  disabled={!product.inStock}
+                  className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Buy Now
+                </button>
+                
                 <a
                   href={product.affiliate_url || product.retailerUrl}
                   target="_blank"

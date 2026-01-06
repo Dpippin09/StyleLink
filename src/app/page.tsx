@@ -6,7 +6,9 @@ import SearchWithSuggestions from '@/components/SearchWithSuggestions';
 import MobileHeader from '@/components/MobileHeader';
 import Footer from '@/components/Footer';
 import FeaturedBrands from '@/components/FeaturedBrands';
+import FeaturedProducts from '@/components/FeaturedProducts';
 import { getFeaturedBrands } from '@/lib/brands';
+import { getFeaturedProducts } from '@/lib/products';
 
 // Mock popular searches
 const popularSearches = [
@@ -17,9 +19,14 @@ const popularSearches = [
 ];
 
 export default async function Home() {
-  // Fetch featured brands from database
-  const brandsResponse = await getFeaturedBrands(8);
+  // Fetch featured brands and products from database
+  const [brandsResponse, productsResponse] = await Promise.all([
+    getFeaturedBrands(8),
+    getFeaturedProducts(8)
+  ]);
+  
   const featuredBrands = brandsResponse.success ? brandsResponse.data : [];
+  const featuredProducts = productsResponse.success ? productsResponse.data : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,10 +82,13 @@ export default async function Home() {
             </div>
           </div>
         </div>
-
-        {/* Featured Brands Section */}
-        <FeaturedBrands brands={featuredBrands} />
       </main>
+
+      {/* Featured Products Section */}
+      <FeaturedProducts products={featuredProducts} />
+
+      {/* Featured Brands Section */}
+      <FeaturedBrands brands={featuredBrands} />
       
       <Footer />
     </div>

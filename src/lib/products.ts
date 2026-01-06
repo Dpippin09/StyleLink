@@ -335,3 +335,76 @@ export function parseSizes(sizes: string | null): string[] {
 export function parseMaterials(materials: string | null): string[] {
   return materials ? materials.split(',').map(m => m.trim()) : []
 }
+
+// Get featured products for homepage
+export async function getFeaturedProducts(limit: number = 8): Promise<ApiResponse<Product[]>> {
+  try {
+    // Try database first
+    let prisma = null
+    try {
+      const dbModule = await import('@/lib/db')
+      prisma = dbModule.prisma
+    } catch (importError) {
+      console.log('Database module not available, using mock data')
+    }
+
+    if (prisma) {
+      const products = await prisma.product.findMany({
+        where: {
+          inStock: true  // Only show in-stock products
+        },
+        include: {
+          images: {
+            orderBy: { order: 'asc' }
+          },
+          category: true,
+          brand: true
+        },
+        orderBy: [
+          { updatedAt: 'desc' },  // Recently updated first
+          { createdAt: 'desc' }   // Then by creation date
+        ],
+        take: limit
+      })
+
+      return {
+        success: true,
+        data: products,
+        pagination: {
+          page: 1,
+          limit,
+          total: products.length,
+          pages: 1
+        }
+      }
+    }
+
+    // Fallback to mock featured products - get them from the getProducts function
+    const mockProductsResponse = await getProducts({ page: 1, limit })
+    if (mockProductsResponse.success) {
+      return {
+        success: true,
+        data: mockProductsResponse.data.slice(0, limit),
+        pagination: {
+          page: 1,
+          limit,
+          total: Math.min(limit, mockProductsResponse.data.length),
+          pages: 1
+        }
+      }
+    }
+
+    return {
+      success: false,
+      data: [],
+      error: 'Failed to fetch featured products'
+    }
+  } catch (error) {
+    console.error('Error fetching featured products:', error)
+    return {
+      success: false,
+      data: [],
+      error: 'Failed to fetch featured products'
+    }
+  }
+}

@@ -95,8 +95,20 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                   <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="flex gap-2">
                       <Link
+                        href={`/checkout?${new URLSearchParams({
+                          productId: product.id,
+                          productName: product.name,
+                          productPrice: (product.price * 100).toString(),
+                          productImage: primaryImage?.url || '',
+                          productBrand: product.brand.name
+                        }).toString()}`}
+                        className="flex-1 bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium text-center hover:bg-green-700 transition-colors"
+                      >
+                        Buy Now
+                      </Link>
+                      <Link
                         href={`/products/${product.slug}`}
-                        className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium text-center hover:bg-primary/90 transition-colors"
+                        className="flex-1 bg-primary text-primary-foreground px-3 py-2 rounded-lg text-sm font-medium text-center hover:bg-primary/90 transition-colors"
                       >
                         View Details
                       </Link>
