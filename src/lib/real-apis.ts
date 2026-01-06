@@ -161,10 +161,23 @@ export class GoogleShoppingAPI {
   private apiKey: string
   private cx: string // Custom Search Engine ID
   private baseUrl = 'https://www.googleapis.com/customsearch/v1'
+  private isConfigured: boolean
 
   constructor(apiKey?: string, cx?: string) {
     this.apiKey = apiKey || process.env.GOOGLE_API_KEY || ''
     this.cx = cx || process.env.GOOGLE_CSE_ID || ''
+    
+    // Check if API is properly configured
+    this.isConfigured = !!(
+      this.apiKey && 
+      this.cx && 
+      this.apiKey !== 'your_google_api_key_here' &&
+      this.cx !== 'your_custom_search_engine_id_here'
+    )
+    
+    if (!this.isConfigured) {
+      console.warn('Google Shopping API not configured - missing API key or CSE ID')
+    }
   }
 
   async searchProducts(query: string, options: {
@@ -173,6 +186,18 @@ export class GoogleShoppingAPI {
     maxPrice?: number
   } = {}): Promise<APISearchResponse> {
     const startTime = Date.now()
+    
+    // Return early if not configured
+    if (!this.isConfigured) {
+      return {
+        success: false,
+        products: [],
+        totalResults: 0,
+        searchTime: Date.now() - startTime,
+        source: 'Google Shopping',
+        error: 'Google Shopping API not configured - missing API key or CSE ID'
+      }
+    }
     
     try {
       const { maxResults = 10 } = options

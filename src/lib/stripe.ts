@@ -1,14 +1,28 @@
 import Stripe from 'stripe';
 import { loadStripe } from '@stripe/stripe-js';
 
-// Server-side Stripe instance
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-12-15.clover',
-});
+// Check if Stripe is configured
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+if (!stripeSecretKey) {
+  console.warn('⚠️ STRIPE_SECRET_KEY not found. Stripe payments will not work.');
+}
+
+// Server-side Stripe instance (only initialize if key is available)
+export const stripe = stripeSecretKey 
+  ? new Stripe(stripeSecretKey, {
+      apiVersion: '2025-12-15.clover',
+    })
+  : null;
 
 // Client-side Stripe instance
 export const getStripe = () => {
-  return loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+  if (!stripePublishableKey) {
+    console.warn('⚠️ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY not found');
+    return null;
+  }
+  return loadStripe(stripePublishableKey);
 };
 
 // StyleLink business logic
@@ -25,6 +39,10 @@ export const calculateRetailerAmount = (totalAmount: number): number => {
 
 // Stripe Connect helper for multi-party payments
 export const createConnectedAccount = async (retailerEmail: string, retailerName: string) => {
+  if (!stripe) {
+    throw new Error('Stripe not configured - missing STRIPE_SECRET_KEY');
+  }
+  
   try {
     const account = await stripe.accounts.create({
       type: 'express',

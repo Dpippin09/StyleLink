@@ -3,6 +3,14 @@ import { stripe, calculateStyleLinkFee, calculateRetailerAmount } from '@/lib/st
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Payment system not configured - missing Stripe configuration' },
+        { status: 500 }
+      );
+    }
+
     const { 
       amount, 
       currency = 'usd', 
