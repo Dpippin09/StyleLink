@@ -96,86 +96,8 @@ export async function searchEtsyMock(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 400))
   
-  const mockProducts: ExternalProduct[] = [
-    {
-      id: 'etsy-1',
-      title: `Handmade ${query} - Bohemian Style Dress`,
-      description: 'Beautiful handcrafted bohemian dress made with sustainable materials',
-      price: 68.00,
-      originalPrice: 85.00,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&auto=format&fit=crop',
-      productUrl: 'https://etsy.com/listing/123456789',
-      platform: 'etsy',
-      brand: 'BohoCreations',
-      condition: 'new',
-      shipping: { cost: 5.95, free: false },
-      seller: { name: 'BohoCreations', rating: 4.9 },
-      category: 'Clothing'
-    },
-    {
-      id: 'etsy-2',
-      title: `Custom ${query} - Artisan Leather Belt`,
-      description: 'Hand-stitched leather belt crafted by skilled artisans',
-      price: 42.50,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&auto=format&fit=crop',
-      productUrl: 'https://etsy.com/listing/987654321',
-      platform: 'etsy',
-      brand: 'LeatherCraft Co',
-      condition: 'new',
-      shipping: { cost: 0, free: true },
-      seller: { name: 'LeatherCraft Co', rating: 4.8 },
-      category: 'Accessories'
-    },
-    {
-      id: 'etsy-3',
-      title: `Vintage ${query} - Retro Band T-Shirt`,
-      description: 'Authentic vintage band t-shirt from the 1980s in excellent condition',
-      price: 35.00,
-      originalPrice: 50.00,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&auto=format&fit=crop',
-      productUrl: 'https://etsy.com/listing/456789123',
-      platform: 'etsy',
-      brand: 'VintageVibes',
-      condition: 'used',
-      shipping: { cost: 3.99, free: false },
-      seller: { name: 'VintageVibes', rating: 4.7 },
-      category: 'Vintage'
-    },
-    {
-      id: 'etsy-4',
-      title: `Sustainable ${query} - Organic Cotton Sweater`,
-      description: 'Eco-friendly organic cotton sweater knitted with love',
-      price: 89.99,
-      originalPrice: 110.00,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=300&auto=format&fit=crop',
-      productUrl: 'https://etsy.com/listing/789123456',
-      platform: 'etsy',
-      brand: 'EcoKnit Studio',
-      condition: 'new',
-      shipping: { cost: 0, free: true },
-      seller: { name: 'EcoKnit Studio', rating: 4.9 },
-      category: 'Clothing'
-    },
-    {
-      id: 'etsy-5',
-      title: `Handcrafted ${query} - Wooden Jewelry Box`,
-      description: 'Beautiful handcrafted wooden jewelry box with intricate details',
-      price: 125.00,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=300&auto=format&fit=crop',
-      productUrl: 'https://etsy.com/listing/321654987',
-      platform: 'etsy',
-      brand: 'WoodWorks Studio',
-      condition: 'new',
-      shipping: { cost: 12.99, free: false },
-      seller: { name: 'WoodWorks Studio', rating: 4.6 },
-      category: 'Accessories'
-    }
-  ]
+  // Return empty results - real products will come from API integrations
+  const mockProducts: ExternalProduct[] = []
   
   return {
     success: true,

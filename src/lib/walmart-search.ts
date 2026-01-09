@@ -90,50 +90,8 @@ export async function searchWalmartMock(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 300))
   
-  const mockProducts: ExternalProduct[] = [
-    {
-      id: 'walmart-1',
-      title: `${query} - Comfortable Cotton Blend Shirt`,
-      description: 'Soft, breathable cotton blend perfect for everyday wear',
-      price: 12.97,
-      originalPrice: 19.97,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1564257577-7fd4b61137c3?w=300&auto=format&fit=crop',
-      productUrl: 'https://walmart.com/ip/123456789',
-      platform: 'walmart',
-      brand: 'Hanes',
-      condition: 'new',
-      shipping: { cost: 0, free: true }
-    },
-    {
-      id: 'walmart-2',
-      title: `${query} - Athletic Running Shoes`,
-      description: 'Lightweight running shoes with superior comfort',
-      price: 24.98,
-      originalPrice: 39.98,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&auto=format&fit=crop',
-      productUrl: 'https://walmart.com/ip/987654321',
-      platform: 'walmart',
-      brand: 'Athletic Works',
-      condition: 'new',
-      shipping: { cost: 0, free: true }
-    },
-    {
-      id: 'walmart-3',
-      title: `${query} - Classic Blue Jeans`,
-      description: 'Timeless denim jeans with perfect fit',
-      price: 16.98,
-      originalPrice: 24.98,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&auto=format&fit=crop',
-      productUrl: 'https://walmart.com/ip/456789123',
-      platform: 'walmart',
-      brand: 'Wrangler',
-      condition: 'new',
-      shipping: { cost: 0, free: true }
-    }
-  ]
+  // Return empty results - real products will come from API integrations
+  const mockProducts: ExternalProduct[] = []
   
   return {
     success: true,

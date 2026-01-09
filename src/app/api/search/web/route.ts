@@ -76,14 +76,14 @@ async function searchWebEnhanced(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 300))
   
-  // Generate realistic products based on search query
-  const products = generateRealisticProducts(query, category, maxResults)
+  // Return empty results - real products will come from API integrations
+  const products: WebSearchProduct[] = []
   
   return {
     success: true,
     platform: 'Web Search',
     products: products,
-    totalResults: products.length * 5, // Simulate more results available
+    totalResults: 0,
     searchTime: Date.now() - startTime
   }
 }

@@ -168,11 +168,28 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
 
   if (!products.length && query) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground mb-4">No products found for "{query}"</p>
-        <p className="text-sm text-muted-foreground">
-          Try searching for items like "white shirt", "black dress", "sneakers", or "jeans"
-        </p>
+      <div className="text-center py-12 bg-muted/30 rounded-2xl">
+        <div className="max-w-md mx-auto space-y-4">
+          <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+            <ShoppingBag className="w-8 h-8 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No Products Found
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              No products found for "{query}". This could be because:
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-1 mb-4">
+              <li>• Real retailer APIs are not yet connected</li>
+              <li>• API keys need to be configured</li>
+              <li>• The search term is too specific</li>
+            </ul>
+            <p className="text-sm text-muted-foreground">
+              Try searching for: "shirt", "dress", "jeans", "shoes", or "jacket"
+            </p>
+          </div>
+        </div>
       </div>
     )
   }

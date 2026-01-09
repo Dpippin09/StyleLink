@@ -10,42 +10,8 @@ import MobileHeader from '@/components/MobileHeader'
 import SearchWithSuggestions from '@/components/SearchWithSuggestions'
 import Footer from '@/components/Footer'
 
-// Mock wardrobe items for now - later we'll replace with real database data
-const mockWardrobeItems = [
-  {
-    id: 1,
-    name: 'Oversized Blazer',
-    brand: 'Everlane',
-    price: 198,
-    image: '/hero-fashion.jpg.png',
-    category: 'Outerwear',
-    worn: 12,
-    favorited: true,
-    purchased: '2023-09-15'
-  },
-  {
-    id: 2,
-    name: 'Wool Coat',
-    brand: 'COS',
-    price: 295,
-    image: '/man-beige-coat.jpg.png',
-    category: 'Outerwear',
-    worn: 8,
-    favorited: true,
-    purchased: '2023-10-02'
-  },
-  {
-    id: 3,
-    name: 'Cashmere Cardigan',
-    brand: 'Uniqlo',
-    price: 99,
-    image: '/woman-cardigan.jpg.png',
-    category: 'Knitwear',
-    worn: 15,
-    favorited: false,
-    purchased: '2023-08-20'
-  }
-]
+// Empty wardrobe items - real items will come from user purchases and uploads
+const mockWardrobeItems: any[] = []
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState('wardrobe')
@@ -243,13 +209,30 @@ export default function UserProfile() {
 
             {/* Empty State for New Users */}
             {mockWardrobeItems.length === 0 ? (
-              <div className="text-center py-12">
-                <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Your wardrobe is empty</h3>
-                <p className="text-muted-foreground mb-6">Start building your collection by adding items you love</p>
-                <Link href="/search" className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                  Discover Items
-                </Link>
+              <div className="text-center py-12 bg-muted/30 rounded-2xl">
+                <div className="max-w-md mx-auto space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                    <ShoppingBag className="w-8 h-8 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">
+                      Your Wardrobe is Empty
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Start building your personal style collection by purchasing items or uploading photos of your favorite pieces.
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-6">
+                      Items you buy through StyleLink will automatically be added to your wardrobe.
+                    </p>
+                  </div>
+                  <Link 
+                    href="/search" 
+                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    Discover Items
+                  </Link>
+                </div>
               </div>
             ) : (
               /* Wardrobe Items */

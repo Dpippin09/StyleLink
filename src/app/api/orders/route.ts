@@ -1,35 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // This would normally connect to your database
-// For now, we'll return mock order data
+// For now, we'll return empty order data until real orders are created
 export async function GET(request: NextRequest) {
-  const mockOrders = [
-    {
-      id: 'sl_order_123456',
-      paymentIntentId: 'pi_test_123456',
-      productName: 'Premium Cashmere Sweater',
-      retailerName: 'Nordstrom',
-      amount: 17900, // $179.00 in cents
-      styleLinkFee: 537, // 3% fee
-      retailerAmount: 17363,
-      status: 'completed',
-      createdAt: '2025-01-05T10:30:00Z',
-      customerEmail: 'customer@example.com',
-      trackingNumber: 'TRK123456789',
-    },
-    {
-      id: 'sl_order_789012',
-      paymentIntentId: 'pi_test_789012',
-      productName: 'Designer Leather Jacket',
-      retailerName: 'Zara',
-      amount: 25000,
-      styleLinkFee: 750,
-      retailerAmount: 24250,
-      status: 'processing',
-      createdAt: '2025-01-04T15:45:00Z',
-      customerEmail: 'customer@example.com',
-    }
-  ];
+  const mockOrders: any[] = [];
 
   return NextResponse.json({
     orders: mockOrders,

@@ -100,36 +100,8 @@ export async function searchEbayMock(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500))
   
-  const mockProducts: ExternalProduct[] = [
-    {
-      id: 'ebay-1',
-      title: `${query} - Vintage Style Dress`,
-      description: 'Beautiful vintage-inspired dress perfect for any occasion',
-      price: 45.99,
-      originalPrice: 65.99,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&auto=format&fit=crop',
-      productUrl: 'https://ebay.com/item/123456789',
-      platform: 'ebay',
-      condition: 'new',
-      shipping: { cost: 0, free: true },
-      seller: { name: 'fashionstore123', rating: 4.8 }
-    },
-    {
-      id: 'ebay-2', 
-      title: `${query} - Designer Jeans`,
-      description: 'Premium denim jeans with perfect fit',
-      price: 89.99,
-      originalPrice: 120.00,
-      currency: 'USD',
-      imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&auto=format&fit=crop',
-      productUrl: 'https://ebay.com/item/987654321',
-      platform: 'ebay',
-      condition: 'new',
-      shipping: { cost: 5.99, free: false },
-      seller: { name: 'denimworld', rating: 4.9 }
-    }
-  ]
+  // Return empty results - real products will come from API integrations
+  const mockProducts: ExternalProduct[] = []
   
   return {
     success: true,

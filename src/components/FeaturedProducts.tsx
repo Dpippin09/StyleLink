@@ -35,9 +35,35 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
 
   if (products.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">No products found.</p>
-      </div>
+      <section className="py-16 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">Featured Collection</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Discover handpicked pieces from top brands and retailers
+            </p>
+          </div>
+          
+          <div className="text-center py-12 bg-muted/30 rounded-2xl">
+            <div className="max-w-md mx-auto space-y-4">
+              <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+                <ShoppingBag className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  No Products Available Yet
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  Our featured products will appear here once we connect to retailer APIs and add inventory.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Try using the search feature to find items from our external partners.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     );
   }
 

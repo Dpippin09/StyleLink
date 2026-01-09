@@ -30,7 +30,7 @@ interface ShippingAddress {
   country: string;
 }
 
-// Mock cart data - starting empty for testing
+// Empty cart - real cart items will come from user interactions
 const mockCartItems: CartItem[] = [];
 
 export default function CartPage() {
