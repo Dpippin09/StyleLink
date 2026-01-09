@@ -46,7 +46,7 @@ export default async function Home() {
               </h2>
               <div className="space-y-2 text-base sm:text-lg text-muted-foreground">
                 <p>Personal style, refined</p>
-                <p>by intelligence.</p>
+                <p>through discovery.</p>
               </div>
             </div>
           </div>

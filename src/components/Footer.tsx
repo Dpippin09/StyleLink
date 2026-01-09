@@ -83,8 +83,8 @@ export default function Footer() {
                 LINK
               </h2>
               <p className="text-white/80 leading-relaxed">
-                Where fashion meets intelligence. Discover your perfect style with our AI-powered fashion platform 
-                that connects you with the latest trends from top retailers worldwide.
+                Your fashion marketplace for discovering the best deals from top retailers worldwide.
+                Find exactly what you're looking for at the price you want.
               </p>
             </div>
             

@@ -26,7 +26,7 @@ StyleLink is a modern, responsive web application that allows users to search, c
 ## 🌟 Features
 
 ### Core Functionality
-- **Smart Search**: Search for fashion items across multiple stores
+- **Enhanced Search**: Search for fashion items across multiple stores
 - **Price Comparison**: Compare prices, discounts, and deals side-by-side
 - **Real-time Updates**: Live pricing and availability information
 - **Advanced Filtering**: Filter by category, price range, brand, and more
@@ -190,9 +190,9 @@ The app can be deployed to any platform that supports Next.js:
 - [ ] User authentication & profiles
 - [ ] Advanced price alerts
 - [ ] Mobile app development
-- [ ] AI-powered recommendations
+- [ ] Personalized recommendations
 - [ ] Social sharing features
-- [ ] Price prediction algorithms
+- [ ] Enhanced price tracking
 - [ ] Store partnership API integrations
 - [ ] Advanced analytics dashboard
 

@@ -14,8 +14,8 @@ const carouselImages: CarouselImage[] = [
   {
     src: "/hero-fashion.jpg.png",
     alt: "Stylish woman in orange sunglasses and oversized white shirt",
-    title: "Style Intelligence",
-    description: "Where fashion meets technology"
+    title: "Style Discovery",
+    description: "Find your perfect fashion match"
   },
   {
     src: "/man-beige-coat.jpg.png",
