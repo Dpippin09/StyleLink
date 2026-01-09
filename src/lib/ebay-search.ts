@@ -22,8 +22,13 @@ export async function searchEbay(
   }
   
   try {
+    // Use sandbox URL for SBX App IDs, production URL for others
+    const isSandbox = ebayAppId.includes('-SBX-');
+    const baseUrl = isSandbox 
+      ? 'https://svcs.sandbox.ebay.com/services/search/FindingService/v1'
+      : 'https://svcs.ebay.com/services/search/FindingService/v1';
+    
     // Build eBay Finding API URL
-    const baseUrl = 'https://svcs.ebay.com/services/search/FindingService/v1'
     const params = new URLSearchParams({
       'OPERATION-NAME': 'findItemsByKeywords',
       'SERVICE-VERSION': '1.0.0',

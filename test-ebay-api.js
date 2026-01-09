@@ -15,7 +15,14 @@ async function testEbayAPI() {
   console.log('🔍 Testing eBay API with App ID:', ebayAppId.substring(0, 20) + '...');
   
   try {
-    const baseUrl = 'https://svcs.ebay.com/services/search/FindingService/v1';
+    // Use sandbox URL for SBX App IDs, production URL for others
+    const isSandbox = ebayAppId.includes('-SBX-');
+    const baseUrl = isSandbox 
+      ? 'https://svcs.sandbox.ebay.com/services/search/FindingService/v1'
+      : 'https://svcs.ebay.com/services/search/FindingService/v1';
+    
+    console.log(`Using ${isSandbox ? 'SANDBOX' : 'PRODUCTION'} environment`);
+    
     const params = new URLSearchParams({
       'OPERATION-NAME': 'findItemsByKeywords',
       'SERVICE-VERSION': '1.0.0',
