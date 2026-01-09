@@ -32,9 +32,9 @@ async function testEbayAPI() {
       'keywords': 'nike sneakers',
       'paginationInput.entriesPerPage': '5',
       'itemFilter(0).name': 'Condition',
-      'itemFilter(0).value(0)': 'New',
+      'itemFilter(0).value': 'New',
       'itemFilter(1).name': 'LocatedIn',
-      'itemFilter(1).value(0)': 'US'
+      'itemFilter(1).value': 'US'
     });
 
     const url = `${baseUrl}?${params}`;

@@ -40,7 +40,7 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
   const [selectedColors, setSelectedColors] = useState<Record<string, string>>({})
   const [addingToCart, setAddingToCart] = useState<Record<string, boolean>>({})
 
-  // Search for real products ONLY - no mock data
+  // Search for real products using external API (eBay focused)
   const searchProducts = async (searchQuery: string) => {
     if (!searchQuery.trim()) return
     
@@ -48,23 +48,41 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
     setError('')
     
     try {
-      // Force real APIs only - no mock fallback
-      const response = await fetch(`/api/search/real?q=${encodeURIComponent(searchQuery)}&maxResults=20&useRealAPIs=true`)
+      // Use the working external search API focused on eBay
+      const response = await fetch(`/api/search/external?q=${encodeURIComponent(searchQuery)}&maxResults=20&platforms=ebay`)
       const data = await response.json()
       
-      if (data.success && data.products.length > 0) {
-        setProducts(data.products)
-        setDataSources(data.sources || [])
+      if (data.success && data.platformResults && data.platformResults.ebay && data.platformResults.ebay.products.length > 0) {
+        // Convert external products to our format
+        const convertedProducts = data.platformResults.ebay.products.map((product: any) => ({
+          id: product.id,
+          title: product.title,
+          description: product.description || product.title,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          currency: product.currency || 'USD',
+          imageUrl: product.imageUrl || '/placeholder-image.jpg',
+          retailerUrl: product.productUrl,
+          affiliate_url: product.productUrl,
+          retailer: product.platform || 'eBay',
+          brand: product.brand || 'Unknown',
+          category: product.category || 'Fashion',
+          inStock: true,
+          condition: product.condition || 'new'
+        }))
         
-        console.log('✅ Real products loaded from:', data.sources.join(', '))
+        setProducts(convertedProducts)
+        setDataSources([data.platformResults.ebay.platform || 'eBay'])
+        
+        console.log('✅ Real products loaded from eBay API:', convertedProducts.length, 'products')
       } else {
         setProducts([])
-        setError(data.error || 'No real products found. Please check API configuration.')
-        console.log('❌ API Error:', data.error)
+        setError(data.error || 'No products found. Try a different search term.')
+        console.log('❌ API Error:', data.error || 'No eBay products found')
       }
     } catch (err) {
       setProducts([])
-      setError('Failed to fetch real products. Check network and API configuration.')
+      setError('Failed to fetch products. Check network connection.')
       console.error('Search error:', err)
     } finally {
       setLoading(false)

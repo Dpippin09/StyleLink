@@ -24,7 +24,7 @@ export async function searchMultiplePlatforms(
   const startTime = Date.now()
   
   const {
-    platforms = ['ebay', 'walmart', 'amazon', 'google', 'etsy'],
+    platforms = ['ebay'], // Focus on eBay only for now
     category,
     maxResultsPerPlatform = 10,
     sortBy = 'price',
@@ -76,7 +76,11 @@ export async function searchMultiplePlatforms(
     const platformResults: Record<string, any> = {}
     
     for (const result of searchResults) {
-      platformResults[result.platform.toLowerCase()] = result
+      const platformKey = result.platform.toLowerCase()
+      console.log(`Search aggregator - Platform: ${result.platform} -> Key: ${platformKey}`)
+      console.log(`Search aggregator - Result:`, { success: result.success, products: result.products?.length || 0 })
+      
+      platformResults[platformKey] = result
       if (result.success && result.products) {
         allProducts = allProducts.concat(result.products)
       }

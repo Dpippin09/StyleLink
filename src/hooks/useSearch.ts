@@ -43,67 +43,87 @@ function convertExternalToProduct(externalProduct: any): Product {
 
 export function useSearch() {
   const [isLoading, setIsLoading] = useState(false);
-  const [cachedResults, setCachedResults] = useState<{ [key: string]: Product[] }>({});
+  const [cachedResults, setCachedResults] = useState<{ [key: string]: { data: Product[], timestamp: number } }>({});
   
+  const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache to reduce API calls
+
   const searchProducts = async (query: string): Promise<Product[]> => {
     setIsLoading(true);
     
     try {
-      // Check cache first
+      // Check cache first with timestamp
       const cacheKey = `search_${query.toLowerCase()}`;
-      if (cachedResults[cacheKey]) {
+      const cached = cachedResults[cacheKey];
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        console.log('Using cached results for:', query);
         setIsLoading(false);
-        return cachedResults[cacheKey];
+        return cached.data;
       }
 
-      // Search both database products and web search API
-      const [databaseResults, webResults] = await Promise.all([
-        // Database search (fallback to empty if fails)
-        fetch(`/api/products?search=${encodeURIComponent(query)}`)
-          .then(res => res.json())
-          .then(data => data.products || [])
-          .catch(() => []),
-        
-        // Web search API
-        fetch(`/api/search/web?q=${encodeURIComponent(query)}&maxResults=20`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              return data.products.map((product: any) => convertExternalToProduct(product));
-            }
-            return [];
-          })
-          .catch(() => [])
-      ]);
-
-      // Combine and deduplicate results
-      const combinedResults = [...databaseResults, ...webResults];
+      // For now, focus on external search since database is empty
+      // When you have products in the database, you can re-enable the parallel search
       
-      // Simple deduplication based on title similarity
-      const uniqueResults = combinedResults.filter((product, index, self) => {
-        return index === self.findIndex(p => 
-          p.title.toLowerCase().trim() === product.title.toLowerCase().trim()
-        );
+      // External search API (eBay, etc.) - reduced max results to avoid rate limits
+      const response = await fetch(`/api/search/external?q=${encodeURIComponent(query)}&maxResults=10&platforms=ebay`);
+      const data = await response.json();
+      
+      console.log('Search API response:', data); // Debug log
+      console.log('Response structure:', {
+        success: data.success,
+        hasPlatformResults: !!data.platformResults,
+        platformResultsKeys: data.platformResults ? Object.keys(data.platformResults) : 'none',
+        ebayData: data.platformResults?.ebay || 'none'
       });
-
-      // Sort by relevance (database results first, then external by rating)
-      const sortedResults = uniqueResults.sort((a, b) => {
-        // Prioritize database results
-        if (a.platform && !b.platform) return 1;
-        if (!a.platform && b.platform) return -1;
+      
+      if (data.success && data.platformResults && data.platformResults.ebay) {
+        console.log('eBay platform data:', data.platformResults.ebay);
+        console.log('eBay products:', data.platformResults.ebay.products);
         
-        // Then by rating * reviews
-        return (b.rating * Math.log(b.reviews + 1)) - (a.rating * Math.log(a.reviews + 1));
-      });
+        if (data.platformResults.ebay.products && data.platformResults.ebay.products.length > 0) {
+          const webResults = data.platformResults.ebay.products.map((product: any) => convertExternalToProduct(product));
+          const combinedResults = webResults;
+    
+          // Simple deduplication based on title similarity
+          const uniqueResults = combinedResults.filter((product: Product, index: number, self: Product[]) => {
+            return index === self.findIndex((p: Product) => 
+              p.title.toLowerCase().trim() === product.title.toLowerCase().trim()
+            );
+          });
 
-      // Cache results
-      setCachedResults(prev => ({
-        ...prev,
-        [cacheKey]: sortedResults
-      }));
+          // Sort by relevance (database results first, then external by rating)
+          const sortedResults = uniqueResults.sort((a: Product, b: Product) => {
+            // Prioritize database results
+            if (a.platform && !b.platform) return 1;
+            if (!a.platform && b.platform) return -1;
+            
+            // Then by rating * reviews
+            return (b.rating * Math.log(b.reviews + 1)) - (a.rating * Math.log(a.reviews + 1));
+          });
 
+          // Cache results with timestamp
+          setCachedResults(prev => ({
+            ...prev,
+            [cacheKey]: {
+              data: sortedResults,
+              timestamp: Date.now()
+            }
+          }));
+
+          setIsLoading(false);
+          return sortedResults;
+        } else {
+          console.log('🚫 eBay returned successful response but 0 products found for query:', query);
+          console.log('This might be due to rate limiting or no matching products');
+        }
+      } else {
+        console.log('🚫 eBay platform data not found or unsuccessful response');
+        if (data.platformResults?.ebay?.error) {
+          console.log('eBay error details:', data.platformResults.ebay.error);
+        }
+      }
+      
       setIsLoading(false);
-      return sortedResults;
+      return [];
       
     } catch (error) {
       console.error('Search error:', error);
@@ -116,11 +136,12 @@ export function useSearch() {
     setIsLoading(true);
     
     try {
-      // Check cache first
+      // Check cache first with timestamp
       const cacheKey = `category_${category.toLowerCase()}`;
-      if (cachedResults[cacheKey]) {
+      const cached = cachedResults[cacheKey];
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
         setIsLoading(false);
-        return cachedResults[cacheKey];
+        return cached.data;
       }
 
       // Fetch from database and external APIs
@@ -137,7 +158,7 @@ export function useSearch() {
           .then(data => {
             if (data.success) {
               const allExternalProducts: any[] = [];
-              Object.values(data.results).forEach((platformResult: any) => {
+              Object.values(data.platformResults).forEach((platformResult: any) => {
                 if (platformResult.success && platformResult.products) {
                   allExternalProducts.push(...platformResult.products);
                 }
@@ -152,22 +173,25 @@ export function useSearch() {
       const combinedResults = [...databaseResults, ...externalResults];
       
       // Deduplicate and sort
-      const uniqueResults = combinedResults.filter((product, index, self) => {
-        return index === self.findIndex(p => 
+      const uniqueResults = combinedResults.filter((product: Product, index: number, self: Product[]) => {
+        return index === self.findIndex((p: Product) => 
           p.title.toLowerCase().trim() === product.title.toLowerCase().trim()
         );
       });
 
-      const sortedResults = uniqueResults.sort((a, b) => {
+      const sortedResults = uniqueResults.sort((a: Product, b: Product) => {
         if (a.platform && !b.platform) return 1;
         if (!a.platform && b.platform) return -1;
         return (b.rating * Math.log(b.reviews + 1)) - (a.rating * Math.log(a.reviews + 1));
       });
 
-      // Cache results
+      // Cache results with timestamp
       setCachedResults(prev => ({
         ...prev,
-        [cacheKey]: sortedResults
+        [cacheKey]: {
+          data: sortedResults,
+          timestamp: Date.now()
+        }
       }));
 
       setIsLoading(false);
@@ -184,11 +208,12 @@ export function useSearch() {
     setIsLoading(true);
     
     try {
-      // Check cache first
+      // Check cache first with timestamp
       const cacheKey = 'popular_products';
-      if (cachedResults[cacheKey]) {
+      const cached = cachedResults[cacheKey];
+      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
         setIsLoading(false);
-        return cachedResults[cacheKey];
+        return cached.data;
       }
 
       // Get trending/popular products from deals API
@@ -202,10 +227,13 @@ export function useSearch() {
         })
         .catch(() => []);
 
-      // Cache results
+      // Cache results with timestamp
       setCachedResults(prev => ({
         ...prev,
-        [cacheKey]: results
+        [cacheKey]: {
+          data: results,
+          timestamp: Date.now()
+        }
       }));
 
       setIsLoading(false);

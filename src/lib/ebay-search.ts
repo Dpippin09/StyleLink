@@ -1,9 +1,10 @@
 import { ExternalProduct, SearchResponse, CLOTHING_CATEGORIES } from './external-search'
+import EbayRateLimit from './ebay-rate-limit'
 
 export async function searchEbay(
   query: string, 
   category?: string, 
-  maxResults: number = 20
+  maxResults: number = 10  // Reduced from 20 to avoid rate limits
 ): Promise<SearchResponse> {
   const startTime = Date.now()
   
@@ -22,11 +23,26 @@ export async function searchEbay(
   }
   
   try {
-    // Use sandbox URL for SBX App IDs, production URL for others
-    const isSandbox = ebayAppId.includes('-SBX-');
-    const baseUrl = isSandbox 
-      ? 'https://svcs.sandbox.ebay.com/services/search/FindingService/v1'
-      : 'https://svcs.ebay.com/services/search/FindingService/v1';
+    // Check rate limiting before making API call
+    const rateLimit = EbayRateLimit.getInstance()
+    const canCall = await rateLimit.canMakeCall()
+    
+    if (!canCall) {
+      const stats = rateLimit.getStats()
+      console.warn(`eBay API rate limit reached: ${stats.callsToday}/${stats.dailyLimit} calls today`)
+      return {
+        products: [],
+        totalResults: 0,
+        searchTime: Date.now() - startTime,
+        platform: 'eBay',
+        success: false,
+        error: `Rate limit exceeded: ${stats.callsToday}/${stats.dailyLimit} calls today. Try again later.`
+      }
+    }
+    // Use production URL for better product availability - sandbox often has no data
+    // For finding API, we can use production URL even with sandbox App ID
+    const baseUrl = 'https://svcs.ebay.com/services/search/FindingService/v1';
+    console.log('Using eBay Production Finding API for better product availability');
     
     // Build eBay Finding API URL
     const params = new URLSearchParams({
@@ -36,13 +52,15 @@ export async function searchEbay(
       'RESPONSE-DATA-FORMAT': 'JSON',
       'REST-PAYLOAD': 'true',
       'keywords': query,
-      'paginationInput.entriesPerPage': maxResults.toString(),
-      'sortOrder': 'PricePlusShipping',
-      'itemFilter(0).name': 'Condition',
-      'itemFilter(0).value(0)': 'New',
-      'itemFilter(1).name': 'LocatedIn',
-      'itemFilter(1).value(0)': 'US'
+      'paginationInput.entriesPerPage': Math.min(maxResults, 20).toString(),
+      'sortOrder': 'PricePlusShipping'
     })
+
+    // Add basic filters only
+    params.append('itemFilter(0).name', 'Condition')
+    params.append('itemFilter(0).value', 'New')
+    params.append('itemFilter(1).name', 'LocatedIn')
+    params.append('itemFilter(1).value', 'US')
 
     // Add category filter if specified
     if (category && CLOTHING_CATEGORIES.ebay[category as keyof typeof CLOTHING_CATEGORIES.ebay]) {
@@ -50,6 +68,14 @@ export async function searchEbay(
     }
 
     const url = `${baseUrl}?${params}`
+    console.log('eBay API Request:', {
+      appId: ebayAppId.substring(0, 20) + '...',
+      usingProduction: true,
+      baseUrl,
+      query,
+      maxResults
+    })
+    console.log('Full eBay URL:', url.substring(0, 150) + '...')
     
     const response = await fetch(url, {
       headers: {
@@ -57,18 +83,39 @@ export async function searchEbay(
       }
     })
 
+    // Record the API call for rate limiting
+    rateLimit.recordCall()
+    const stats = rateLimit.getStats()
+    console.log(`eBay API call made: ${stats.callsToday}/${stats.dailyLimit} calls today`)
+
+    console.log('eBay API response:', response.status, response.statusText)
+
     if (!response.ok) {
-      throw new Error(`eBay API error: ${response.status}`)
+      const errorText = await response.text()
+      console.error('eBay API error response:', errorText)
+      
+      // Check for rate limit error
+      if (response.status === 500 && errorText.includes('exceeded the number of times')) {
+        throw new Error(`eBay API rate limit exceeded. Please wait a moment and try again.`)
+      }
+      
+      throw new Error(`eBay API error: ${response.status} - ${errorText.substring(0, 200)}`)
     }
 
     const data = await response.json()
+    console.log('eBay API full response:', JSON.stringify(data, null, 2))
     const searchResult = data.findItemsByKeywordsResponse?.[0]
     
     if (!searchResult || searchResult.ack[0] !== 'Success') {
-      throw new Error('eBay API returned no results')
+      const errorMsg = searchResult?.errorMessage?.[0]?.error?.[0]?.message?.[0] || 'Unknown error'
+      console.error('eBay API error:', errorMsg)
+      console.error('Full search result:', searchResult)
+      throw new Error(`eBay API returned error: ${errorMsg}`)
     }
 
     const items = searchResult.searchResult?.[0]?.item || []
+    console.log('eBay items found:', items.length)
+    console.log('First item sample:', items[0] ? JSON.stringify(items[0], null, 2).substring(0, 300) : 'No items')
     
     const products: ExternalProduct[] = items.map((item: any) => ({
       id: item.itemId[0],
