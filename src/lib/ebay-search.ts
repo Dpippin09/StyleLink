@@ -7,22 +7,36 @@ export async function searchEbay(
 ): Promise<SearchResponse> {
   const startTime = Date.now()
   
+  // Check if we have a real eBay App ID
+  const ebayAppId = process.env.EBAY_APP_ID || process.env.NEXT_PUBLIC_EBAY_APP_ID
+  
+  if (!ebayAppId || ebayAppId.includes('your_actual_ebay_app_id_here') || ebayAppId === 'YourAppI-d') {
+    console.log('eBay App ID not configured, using empty results')
+    return {
+      products: [],
+      totalResults: 0,
+      searchTime: Date.now() - startTime,
+      platform: 'ebay',
+      success: false
+    }
+  }
+  
   try {
     // Build eBay Finding API URL
     const baseUrl = 'https://svcs.ebay.com/services/search/FindingService/v1'
     const params = new URLSearchParams({
       'OPERATION-NAME': 'findItemsByKeywords',
       'SERVICE-VERSION': '1.0.0',
-      'SECURITY-APPNAME': 'YourAppI-d', // You'll need to get a free eBay app ID
+      'SECURITY-APPNAME': ebayAppId,
       'RESPONSE-DATA-FORMAT': 'JSON',
       'REST-PAYLOAD': 'true',
       'keywords': query,
       'paginationInput.entriesPerPage': maxResults.toString(),
       'sortOrder': 'PricePlusShipping',
       'itemFilter(0).name': 'Condition',
-      'itemFilter(0).value': 'New',
+      'itemFilter(0).value(0)': 'New',
       'itemFilter(1).name': 'LocatedIn',
-      'itemFilter(1).value': 'US'
+      'itemFilter(1).value(0)': 'US'
     })
 
     // Add category filter if specified

@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react']
+  },
+  env: {
+    EBAY_APP_ID: process.env.EBAY_APP_ID,
   }
 };
 
