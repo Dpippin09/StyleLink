@@ -51,13 +51,13 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">
-                  No Products Available Yet
+                  No Products Available Right Now
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  Our featured products will appear here once we connect to retailer APIs and add inventory.
+                  We're currently managing eBay API rate limits to ensure optimal performance. Featured products will appear here soon.
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Try using the search feature to find items from our external partners.
+                  Try using the search feature to find items, or check back in a few minutes.
                 </p>
               </div>
             </div>

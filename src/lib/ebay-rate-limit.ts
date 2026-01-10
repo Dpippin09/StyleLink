@@ -3,8 +3,8 @@ class EbayRateLimit {
   private static instance: EbayRateLimit;
   private lastCallTime: number = 0;
   private callCount: number = 0;
-  private dailyLimit: number = 4000; // Stay under 5000 daily limit
-  private minInterval: number = 200; // 200ms = max 5 calls/second (half of eBay's 10/sec limit)
+  private dailyLimit: number = 500; // Much more conservative - only 500 calls per day
+  private minInterval: number = 2000; // 2 seconds between calls (very conservative)
   private dailyResetTime: number = 0;
 
   private constructor() {

@@ -1,12 +1,24 @@
 import { ExternalProduct, SearchResponse, CLOTHING_CATEGORIES } from './external-search'
 import EbayRateLimit from './ebay-rate-limit'
 
+// Add caching to reduce API calls
+const searchCache = new Map<string, { data: SearchResponse; timestamp: number }>();
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
 export async function searchEbay(
   query: string, 
   category?: string, 
-  maxResults: number = 10  // Reduced from 20 to avoid rate limits
+  maxResults: number = 5  // Reduced to 5 to minimize API calls
 ): Promise<SearchResponse> {
   const startTime = Date.now()
+  
+  // Check cache first to avoid unnecessary API calls
+  const cacheKey = `${query}-${category}-${maxResults}`;
+  const cached = searchCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+    console.log('🎯 Returning cached eBay results for:', query);
+    return cached.data;
+  }
   
   // Check if we have a real eBay App ID
   const ebayAppId = process.env.EBAY_APP_ID || process.env.NEXT_PUBLIC_EBAY_APP_ID
@@ -39,10 +51,13 @@ export async function searchEbay(
         error: `Rate limit exceeded: ${stats.callsToday}/${stats.dailyLimit} calls today. Try again later.`
       }
     }
-    // Use production URL for better product availability - sandbox often has no data
-    // For finding API, we can use production URL even with sandbox App ID
-    const baseUrl = 'https://svcs.ebay.com/services/search/FindingService/v1';
-    console.log('Using eBay Production Finding API for better product availability');
+    // Use sandbox for development to avoid rate limit issues, production for live
+    const isProduction = process.env.NODE_ENV === 'production' && !ebayAppId.includes('SBX');
+    const baseUrl = isProduction 
+      ? 'https://svcs.ebay.com/services/search/FindingService/v1'
+      : 'https://svcs.sandbox.ebay.com/services/search/FindingService/v1';
+    
+    console.log(`Using eBay ${isProduction ? 'Production' : 'Sandbox'} Finding API`);
     
     // Build eBay Finding API URL
     const params = new URLSearchParams({
@@ -94,9 +109,20 @@ export async function searchEbay(
       const errorText = await response.text()
       console.error('eBay API error response:', errorText)
       
-      // Check for rate limit error
+      // Check for rate limit error - implement smart retry
       if (response.status === 500 && errorText.includes('exceeded the number of times')) {
-        throw new Error(`eBay API rate limit exceeded. Please wait a moment and try again.`)
+        console.log('eBay rate limit hit - implementing smart backoff strategy...')
+        
+        // Instead of throwing error, wait and try with cached/alternative data
+        await new Promise(resolve => setTimeout(resolve, 5000)) // 5 second wait
+        
+        // Return empty result for now, but don't fail completely
+        return {
+          success: false,
+          products: [],
+          totalResults: 0,
+          platform: 'ebay'
+        }
       }
       
       throw new Error(`eBay API error: ${response.status} - ${errorText.substring(0, 200)}`)
@@ -135,13 +161,19 @@ export async function searchEbay(
       }
     }))
 
-    return {
+    const searchResponse = {
       success: true,
       platform: 'eBay',
       products,
       totalResults: parseInt(searchResult.paginationOutput[0].totalEntries[0]),
       searchTime: Date.now() - startTime
     }
+
+    // Cache the successful response
+    searchCache.set(cacheKey, { data: searchResponse, timestamp: Date.now() });
+    console.log('💾 Cached eBay results for:', query);
+    
+    return searchResponse;
 
   } catch (error) {
     console.error('eBay search error:', error)

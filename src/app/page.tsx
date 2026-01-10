@@ -19,7 +19,7 @@ const popularSearches = [
 ];
 
 export default async function Home() {
-  // Fetch featured brands and products from database
+  // Fetch featured brands from database and real products from database
   const [brandsResponse, productsResponse] = await Promise.all([
     getFeaturedBrands(8),
     getFeaturedProducts(8)
@@ -84,7 +84,7 @@ export default async function Home() {
         </div>
       </main>
 
-      {/* Featured Products Section */}
+      {/* Featured Database Products Section - Real products from PostgreSQL */}
       <FeaturedProducts products={featuredProducts} />
 
       {/* Featured Brands Section */}
