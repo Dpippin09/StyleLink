@@ -10,11 +10,9 @@ class EbayRateLimit {
   private constructor() {
     // Reset daily counter every 24 hours
     const now = Date.now();
-    const lastReset = localStorage.getItem('ebay_last_reset');
-    if (!lastReset || now - parseInt(lastReset) > 24 * 60 * 60 * 1000) {
+    // Use memory-based tracking instead of localStorage (which doesn't exist on server)
+    if (this.dailyResetTime === 0 || now - this.dailyResetTime > 24 * 60 * 60 * 1000) {
       this.resetDailyCount();
-    } else {
-      this.callCount = parseInt(localStorage.getItem('ebay_call_count') || '0');
     }
   }
 
@@ -48,14 +46,13 @@ class EbayRateLimit {
   recordCall(): void {
     this.lastCallTime = Date.now();
     this.callCount++;
-    localStorage.setItem('ebay_call_count', this.callCount.toString());
+    // Remove localStorage usage on server side
   }
 
   private resetDailyCount(): void {
     this.callCount = 0;
     this.dailyResetTime = Date.now();
-    localStorage.setItem('ebay_call_count', '0');
-    localStorage.setItem('ebay_last_reset', this.dailyResetTime.toString());
+    // Remove localStorage usage on server side
   }
 
   getStats(): { callsToday: number; dailyLimit: number; canCall: boolean } {

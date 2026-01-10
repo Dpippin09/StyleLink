@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import RefreshToHomeWrapper from "@/components/RefreshToHomeWrapper";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,7 +42,9 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} antialiased min-h-screen bg-background text-foreground`}
       >
         <AuthProvider>
-          {children}
+          <RefreshToHomeWrapper>
+            {children}
+          </RefreshToHomeWrapper>
         </AuthProvider>
       </body>
     </html>
