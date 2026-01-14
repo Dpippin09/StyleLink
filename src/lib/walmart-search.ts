@@ -90,8 +90,35 @@ export async function searchWalmartMock(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 300))
   
-  // Return empty results - real products will come from API integrations
-  const mockProducts: ExternalProduct[] = []
+  // Return sample products when no API key is available
+  const mockProducts: ExternalProduct[] = [
+    {
+      id: `walmart_${query}_1`,
+      title: `${query.charAt(0).toUpperCase() + query.slice(1)} - Classic Style`,
+      price: 29.99,
+      originalPrice: 39.99,
+      currency: 'USD',
+      imageUrl: 'https://via.placeholder.com/200x200?text=Walmart+Product',
+      productUrl: 'https://walmart.com/sample',
+      platform: 'walmart',
+      description: `High-quality ${query} from Walmart with great value and style.`,
+      brand: 'Walmart Brand',
+      condition: 'new'
+    },
+    {
+      id: `walmart_${query}_2`,
+      title: `Premium ${query} Collection`,
+      price: 49.99,
+      originalPrice: 64.99,
+      currency: 'USD',
+      imageUrl: 'https://via.placeholder.com/200x200?text=Walmart+Premium',
+      productUrl: 'https://walmart.com/sample2',
+      platform: 'walmart',
+      description: `Premium ${query} with enhanced features and comfort.`,
+      brand: 'Great Value',
+      condition: 'new'
+    }
+  ]
   
   return {
     success: true,

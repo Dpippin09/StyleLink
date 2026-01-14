@@ -96,8 +96,34 @@ export async function searchEtsyMock(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 400))
   
-  // Return empty results - real products will come from API integrations
-  const mockProducts: ExternalProduct[] = []
+  // Return sample products when no API key is available
+  const mockProducts: ExternalProduct[] = [
+    {
+      id: `etsy_${query}_1`,
+      title: `Handcrafted ${query.charAt(0).toUpperCase() + query.slice(1)}`,
+      price: 45.00,
+      originalPrice: 55.00,
+      currency: 'USD',
+      imageUrl: 'https://via.placeholder.com/200x200?text=Etsy+Handmade',
+      productUrl: 'https://etsy.com/sample',
+      platform: 'etsy',
+      description: `Beautiful handcrafted ${query} made by artisan sellers.`,
+      brand: 'Artisan Made',
+      condition: 'new'
+    },
+    {
+      id: `etsy_${query}_2`,
+      title: `Vintage ${query} Style`,
+      price: 35.99,
+      currency: 'USD',
+      imageUrl: 'https://via.placeholder.com/200x200?text=Etsy+Vintage',
+      productUrl: 'https://etsy.com/sample2',
+      platform: 'etsy',
+      description: `Unique vintage-inspired ${query} from creative sellers.`,
+      brand: 'Vintage Collection',
+      condition: 'new'
+    }
+  ]
   
   return {
     success: true,

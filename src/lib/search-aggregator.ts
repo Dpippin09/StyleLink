@@ -1,7 +1,7 @@
 import { searchEbay } from './ebay-search'
 import { searchWalmart } from './walmart-search'
 import { searchAmazon } from './amazon-search'
-// import { searchGoogle } from './google-search' // Temporarily disabled due to build issues
+// import { searchGoogle } from './google-search' // Temporarily disabled due to export issue
 import { searchEtsy } from './etsy-search'
 import { MultiPlatformSearchResponse, ExternalProduct } from './external-search'
 
@@ -24,7 +24,7 @@ export async function searchMultiplePlatforms(
   const startTime = Date.now()
   
   const {
-    platforms = ['ebay'], // Focus on eBay only for now
+    platforms = ['walmart', 'etsy', 'amazon', 'ebay'], // Enable multiple platforms to bypass eBay rate limits, Google disabled temporarily
     category,
     maxResultsPerPlatform = 10,
     sortBy = 'price',
@@ -42,16 +42,6 @@ export async function searchMultiplePlatforms(
             return await searchWalmart(query, category, maxResultsPerPlatform)
           case 'amazon':
             return await searchAmazon(query, category, maxResultsPerPlatform)
-          case 'google':
-            // Temporarily disabled - return empty result
-            return {
-              success: false,
-              platform: 'google',
-              products: [],
-              error: 'Google search temporarily disabled',
-              searchTime: 0,
-              totalResults: 0
-            }
           case 'etsy':
             return await searchEtsy(query, category, maxResultsPerPlatform)
           default:

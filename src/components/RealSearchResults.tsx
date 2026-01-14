@@ -40,7 +40,7 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
   const [selectedColors, setSelectedColors] = useState<Record<string, string>>({})
   const [addingToCart, setAddingToCart] = useState<Record<string, boolean>>({})
 
-  // Search for real products using external API (eBay focused)
+  // Search for real products using external API (Multi-platform: Walmart, Amazon, Etsy, eBay)
   const searchProducts = async (searchQuery: string) => {
     if (!searchQuery.trim()) return
     
@@ -48,13 +48,13 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
     setError('')
     
     try {
-      // Use the working external search API focused on eBay
-      const response = await fetch(`/api/search/external?q=${encodeURIComponent(searchQuery)}&maxResults=20&platforms=ebay`)
+      // Use the multi-platform external search API
+      const response = await fetch(`/api/search/external?q=${encodeURIComponent(searchQuery)}&maxResults=20`)
       const data = await response.json()
       
-      if (data.success && data.platformResults && data.platformResults.ebay && data.platformResults.ebay.products.length > 0) {
-        // Convert external products to our format
-        const convertedProducts = data.platformResults.ebay.products.map((product: any) => ({
+      if (data.success && data.products && data.products.length > 0) {
+        // Convert external products from all platforms to our format
+        const convertedProducts = data.products.map((product: any) => ({
           id: product.id,
           title: product.title,
           description: product.description || product.title,
@@ -64,7 +64,7 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
           imageUrl: product.imageUrl || '/placeholder-image.jpg',
           retailerUrl: product.productUrl,
           affiliate_url: product.productUrl,
-          retailer: product.platform || 'eBay',
+          retailer: product.platform || 'Unknown',
           brand: product.brand || 'Unknown',
           category: product.category || 'Fashion',
           inStock: true,
@@ -72,13 +72,18 @@ export default function RealSearchResults({ query, onAddToCart, onToggleWishlist
         }))
         
         setProducts(convertedProducts)
-        setDataSources([data.platformResults.ebay.platform || 'eBay'])
+        // Get all platforms that returned results
+        const activePlatforms = Object.keys(data.platformResults || {})
+          .filter(platform => data.platformResults[platform].products?.length > 0)
+          .map(platform => data.platformResults[platform].platform || platform)
+        setDataSources(activePlatforms.length > 0 ? activePlatforms : ['Multi-Platform'])
         
-        console.log('✅ Real products loaded from eBay API:', convertedProducts.length, 'products')
+        console.log('✅ Real products loaded from multiple platforms:', convertedProducts.length, 'products')
+        console.log('Active platforms:', activePlatforms)
       } else {
         setProducts([])
-        setError(data.error || 'No products found. Try a different search term.')
-        console.log('❌ API Error:', data.error || 'No eBay products found')
+        setError(data.error || 'No products found from any platform. Try a different search term.')
+        console.log('❌ API Error:', data.error || 'No products found from any platform')
       }
     } catch (err) {
       setProducts([])

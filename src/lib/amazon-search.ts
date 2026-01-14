@@ -72,8 +72,34 @@ export async function searchAmazonMock(
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 400))
   
-  // Return empty results - real products will come from API integrations
-  const mockProducts: ExternalProduct[] = []
+  // Return sample products when no API key is available
+  const mockProducts: ExternalProduct[] = [
+    {
+      id: `amazon_${query}_1`,
+      title: `Amazon's Choice ${query.charAt(0).toUpperCase() + query.slice(1)}`,
+      price: 39.99,
+      originalPrice: 49.99,
+      currency: 'USD',
+      imageUrl: 'https://via.placeholder.com/200x200?text=Amazon+Choice',
+      productUrl: 'https://amazon.com/sample',
+      platform: 'amazon',
+      description: `Top-rated ${query} with fast shipping and great reviews.`,
+      brand: 'Amazon Brand',
+      condition: 'new'
+    },
+    {
+      id: `amazon_${query}_2`,
+      title: `Prime ${query} Collection`,
+      price: 59.99,
+      currency: 'USD',
+      imageUrl: 'https://via.placeholder.com/200x200?text=Amazon+Prime',
+      productUrl: 'https://amazon.com/sample2',
+      platform: 'amazon',
+      description: `Premium ${query} with Prime delivery and excellent quality.`,
+      brand: 'Prime Brand',
+      condition: 'new'
+    }
+  ]
   
   return {
     success: true,

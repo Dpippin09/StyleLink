@@ -126,6 +126,11 @@ model Product {
   sourceUrl     String?  // URL to the actual retailer
   affiliate     Boolean  @default(false)
   
+  // External product tracking (for imports)
+  externalId    String?  // Original ID from external platform
+  externalPlatform String? // Platform: ebay, walmart, amazon, etc
+  lastSyncedAt  DateTime? // When this product was last synced from external source
+  
   // User interactions
   wishlistItems WishlistItem[]
   cartItems     CartItem[]

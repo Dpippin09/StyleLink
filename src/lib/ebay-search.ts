@@ -51,13 +51,14 @@ export async function searchEbay(
         error: `Rate limit exceeded: ${stats.callsToday}/${stats.dailyLimit} calls today. Try again later.`
       }
     }
-    // Use sandbox for development to avoid rate limit issues, production for live
-    const isProduction = process.env.NODE_ENV === 'production' && !ebayAppId.includes('SBX');
-    const baseUrl = isProduction 
+    // Determine API endpoint based on App ID type: Production App IDs use production endpoint
+    const isProductionAppId = ebayAppId.includes('PRD-') || (!ebayAppId.includes('SBX') && !ebayAppId.includes('sandbox'));
+    const baseUrl = isProductionAppId 
       ? 'https://svcs.ebay.com/services/search/FindingService/v1'
       : 'https://svcs.sandbox.ebay.com/services/search/FindingService/v1';
     
-    console.log(`Using eBay ${isProduction ? 'Production' : 'Sandbox'} Finding API`);
+    console.log(`Using eBay ${isProductionAppId ? 'Production' : 'Sandbox'} Finding API`);
+    console.log(`App ID detected as: ${isProductionAppId ? 'Production (PRD)' : 'Sandbox (SBX)'} type`);
     
     // Build eBay Finding API URL
     const params = new URLSearchParams({
@@ -85,7 +86,7 @@ export async function searchEbay(
     const url = `${baseUrl}?${params}`
     console.log('eBay API Request:', {
       appId: ebayAppId.substring(0, 20) + '...',
-      usingProduction: true,
+      usingProduction: isProductionAppId,
       baseUrl,
       query,
       maxResults

@@ -57,7 +57,7 @@ export function useSearch() {
       console.log('Searching for:', query);
       
       // Use external search API (eBay integration)
-      const response = await fetch(`/api/search/external?q=${encodeURIComponent(query)}&maxResults=20&platforms=ebay`);
+      const response = await fetch(`/api/search/external?q=${encodeURIComponent(query)}&maxResults=20`);
       
       if (!response.ok) {
         throw new Error(`Search API error: ${response.status}`);

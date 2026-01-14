@@ -63,63 +63,59 @@ export function useSearch() {
       // For now, focus on external search since database is empty
       // When you have products in the database, you can re-enable the parallel search
       
-      // External search API (eBay, etc.) - reduced max results to avoid rate limits
-      const response = await fetch(`/api/search/external?q=${encodeURIComponent(query)}&maxResults=10&platforms=ebay`);
+      // External search API (all platforms) - reduced max results to avoid rate limits
+      const response = await fetch(`/api/search/external?q=${encodeURIComponent(query)}&maxResults=10`);
       const data = await response.json();
       
       console.log('Search API response:', data); // Debug log
       console.log('Response structure:', {
         success: data.success,
+        totalProducts: data.totalProducts,
         hasPlatformResults: !!data.platformResults,
         platformResultsKeys: data.platformResults ? Object.keys(data.platformResults) : 'none',
-        ebayData: data.platformResults?.ebay || 'none'
+        allProducts: data.products?.length || 0
       });
       
-      if (data.success && data.platformResults && data.platformResults.ebay) {
-        console.log('eBay platform data:', data.platformResults.ebay);
-        console.log('eBay products:', data.platformResults.ebay.products);
+      // Check if we have any products from any platform
+      if (data.success && data.products && data.products.length > 0) {
+        console.log('✅ Found products from platforms:', Object.keys(data.platformResults || {}));
+        console.log('Total products received:', data.products.length);
         
-        if (data.platformResults.ebay.products && data.platformResults.ebay.products.length > 0) {
-          const webResults = data.platformResults.ebay.products.map((product: any) => convertExternalToProduct(product));
-          const combinedResults = webResults;
-    
-          // Simple deduplication based on title similarity
-          const uniqueResults = combinedResults.filter((product: Product, index: number, self: Product[]) => {
-            return index === self.findIndex((p: Product) => 
-              p.title.toLowerCase().trim() === product.title.toLowerCase().trim()
-            );
-          });
+        // Convert all products from all platforms
+        const webResults = data.products.map((product: any) => convertExternalToProduct(product));
+        const combinedResults = webResults;
+  
+        // Simple deduplication based on title similarity
+        const uniqueResults = combinedResults.filter((product: Product, index: number, self: Product[]) => {
+          return index === self.findIndex((p: Product) => 
+            p.title.toLowerCase().trim() === product.title.toLowerCase().trim()
+          );
+        });
 
-          // Sort by relevance (database results first, then external by rating)
-          const sortedResults = uniqueResults.sort((a: Product, b: Product) => {
-            // Prioritize database results
-            if (a.platform && !b.platform) return 1;
-            if (!a.platform && b.platform) return -1;
-            
-            // Then by rating * reviews
-            return (b.rating * Math.log(b.reviews + 1)) - (a.rating * Math.log(a.reviews + 1));
-          });
+        // Sort by relevance (database results first, then external by rating)
+        const sortedResults = uniqueResults.sort((a: Product, b: Product) => {
+          // Prioritize database results
+          if (a.platform && !b.platform) return 1;
+          if (!a.platform && b.platform) return -1;
+          
+          // Then by rating * reviews
+          return (b.rating * Math.log(b.reviews + 1)) - (a.rating * Math.log(a.reviews + 1));
+        });
 
-          // Cache results with timestamp
-          setCachedResults(prev => ({
-            ...prev,
-            [cacheKey]: {
-              data: sortedResults,
-              timestamp: Date.now()
-            }
-          }));
+        // Cache results with timestamp
+        setCachedResults(prev => ({
+          ...prev,
+          [cacheKey]: {
+            data: sortedResults,
+            timestamp: Date.now()
+          }
+        }));
 
-          setIsLoading(false);
-          return sortedResults;
-        } else {
-          console.log('🚫 eBay returned successful response but 0 products found for query:', query);
-          console.log('This might be due to rate limiting or no matching products');
-        }
+        setIsLoading(false);
+        return sortedResults;
       } else {
-        console.log('🚫 eBay platform data not found or unsuccessful response');
-        if (data.platformResults?.ebay?.error) {
-          console.log('eBay error details:', data.platformResults.ebay.error);
-        }
+        console.log('🚫 No products found from any platform for query:', query);
+        console.log('Platform results:', data.platformResults || 'none');
       }
       
       setIsLoading(false);

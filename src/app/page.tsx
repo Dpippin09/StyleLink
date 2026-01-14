@@ -35,8 +35,8 @@ export default async function Home() {
 
       {/* Main Hero Section */}
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[50vh] sm:min-h-[60vh]">
-          {/* Left Side - Text Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start min-h-[50vh] sm:min-h-[60vh]">
+          {/* Left Side - Text Content & Search */}
           <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1">
             <div>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-primary mb-4 sm:mb-6">
@@ -44,9 +44,33 @@ export default async function Home() {
                 <span className="inline-block transform scale-x-[-1]">E</span>
                 LINK
               </h2>
-              <div className="space-y-2 text-base sm:text-lg text-muted-foreground">
+              <div className="space-y-2 text-base sm:text-lg text-muted-foreground mb-8">
                 <p>Personal style, refined</p>
                 <p>through discovery.</p>
+              </div>
+              
+              {/* Search Section - Now positioned below tagline */}
+              <div className="max-w-md lg:max-w-lg">
+                {/* Search Bar with Suggestions */}
+                <div className="mb-4">
+                  <SearchWithSuggestions />
+                </div>
+                
+                {/* Popular Searches */}
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Popular searches:</p>
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3">
+                    {popularSearches.map((search, index) => (
+                      <Link
+                        key={index}
+                        href={`/search?q=${encodeURIComponent(search.text)}`}
+                        className="text-xs sm:text-sm text-primary hover:underline underline-offset-4 decoration-1 cursor-pointer px-2 py-1"
+                      >
+                        {search.text}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -54,32 +78,6 @@ export default async function Home() {
           {/* Right Side - Fashion Image Carousel */}
           <div className="relative order-1 lg:order-2">
             <HeroCarousel autoPlay={true} interval={4000} />
-          </div>
-        </div>
-        
-        {/* Search Section */}
-        <div className="mt-12 sm:mt-16 text-center">
-          <div className="max-w-2xl mx-auto px-4">
-            {/* Search Bar with Suggestions */}
-            <div className="mb-6">
-              <SearchWithSuggestions />
-            </div>
-            
-            {/* Popular Searches */}
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Popular searches:</p>
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-                {popularSearches.map((search, index) => (
-                  <Link
-                    key={index}
-                    href={`/search?q=${encodeURIComponent(search.text)}`}
-                    className="text-xs sm:text-sm text-primary hover:underline underline-offset-4 decoration-1 cursor-pointer px-2 py-1"
-                  >
-                    {search.text}
-                  </Link>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </main>
