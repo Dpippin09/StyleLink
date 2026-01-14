@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { productImportService } from '@/lib/product-import'
+// TODO: Re-enable after Prisma client is properly generated
+// import { productImportService } from '@/lib/product-import'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,14 +13,22 @@ export async function POST(request: NextRequest) {
       updateExisting: body.updateExisting || false
     }
 
-    console.log('🚀 Starting product import with config:', config)
+    console.log('🚀 Import API called with config:', config)
     
-    const stats = await productImportService.importProducts(config)
+    // TODO: Re-enable after Prisma setup
+    // const stats = await productImportService.importProducts(config)
     
     return NextResponse.json({
       success: true,
-      stats,
-      message: `Import completed: ${stats.totalImported} imported, ${stats.totalUpdated} updated, ${stats.totalSkipped} skipped`
+      stats: {
+        totalSearched: 0,
+        totalImported: 0,
+        totalUpdated: 0,
+        totalSkipped: 0,
+        errors: [],
+        duration: 0
+      },
+      message: `Import service will be enabled after Prisma client setup`
     })
     
   } catch (error) {
@@ -33,11 +42,16 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const stats = await productImportService.getImportStats()
+    // TODO: Re-enable after Prisma setup  
+    // const stats = await productImportService.getImportStats()
     
     return NextResponse.json({
       success: true,
-      stats
+      stats: {
+        totalProducts: 0,
+        totalCategories: 0,
+        lastImport: null
+      }
     })
     
   } catch (error) {

@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { scheduledImportService } from '@/lib/scheduled-import'
+// TODO: Re-enable after Prisma client is properly generated
+// import { scheduledImportService } from '@/lib/scheduled-import'
 
 export async function GET() {
   try {
-    const status = scheduledImportService.getStatus()
+    // TODO: Re-enable after setup
+    // const status = scheduledImportService.getStatus()
     return NextResponse.json({ 
       success: true, 
-      jobs: status,
-      message: `${status.length} scheduled jobs active`
+      jobs: [],
+      message: `Scheduler will be available after Prisma setup`
     })
   } catch (error) {
     return NextResponse.json({ 
@@ -21,34 +23,11 @@ export async function POST(request: NextRequest) {
   try {
     const { action } = await request.json()
 
-    switch (action) {
-      case 'start':
-        scheduledImportService.startAll()
-        return NextResponse.json({ 
-          success: true, 
-          message: 'Scheduled imports started' 
-        })
-
-      case 'stop':
-        scheduledImportService.stopAll()
-        return NextResponse.json({ 
-          success: true, 
-          message: 'Scheduled imports stopped' 
-        })
-
-      case 'status':
-        const status = scheduledImportService.getStatus()
-        return NextResponse.json({ 
-          success: true, 
-          jobs: status 
-        })
-
-      default:
-        return NextResponse.json({ 
-          success: false, 
-          error: 'Invalid action. Use: start, stop, or status' 
-        }, { status: 400 })
-    }
+    // TODO: Re-enable after setup
+    return NextResponse.json({ 
+      success: true, 
+      message: `Scheduler ${action} will be available after setup` 
+    })
   } catch (error) {
     return NextResponse.json({ 
       success: false, 
