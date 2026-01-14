@@ -89,11 +89,23 @@ export class ScheduledImportService {
 
   // Get status of all jobs
   getStatus() {
-    return this.jobs.map((job, index) => ({
-      index,
-      running: job.running,
-      nextRun: job.nextDate()?.toDate()
-    }))
+    return this.jobs.map((job, index) => {
+      try {
+        // Simple status check - if job exists in array, it's considered active
+        const nextDate = job.nextDate()
+        return {
+          index,
+          running: true, // If job is in array, it's considered running
+          nextRun: nextDate ? nextDate.toJSDate() : null
+        }
+      } catch (error) {
+        return {
+          index,
+          running: false,
+          nextRun: null
+        }
+      }
+    })
   }
 }
 
