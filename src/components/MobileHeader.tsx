@@ -41,7 +41,7 @@ export default function MobileHeader({
     <header className="bg-[var(--header-bg)] text-[var(--header-text)] py-3 relative">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between">
-          {/* Left Side - Back Button (non-home) or Mobile Demo Link (home) */}
+          {/* Left Side - Back Button (non-home) */}
           {!isHomePage ? (
             <Link href={backLink} className="flex items-center text-xs sm:text-sm hover:opacity-75 transition-opacity">
               <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
@@ -49,12 +49,7 @@ export default function MobileHeader({
               <span className="sm:hidden">Back</span>
             </Link>
           ) : (
-            <div className="flex md:hidden items-center space-x-2 text-xs">
-              <Link href="/wishlist" className="hover:opacity-75 transition-opacity">WISHLIST</Link>
-              <Link href="/demo" className="bg-white/20 text-white px-2 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
-                DEMO
-              </Link>
-            </div>
+            <div className="w-16"></div> // Spacer for layout balance
           )}
           
           {/* Center Logo */}
@@ -66,52 +61,19 @@ export default function MobileHeader({
             </h1>
           </div>
           
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4 text-sm">
-            {menuItems.map((item) => (
-              item.current ? (
-                <span key={item.href} className="text-primary font-medium">
-                  {item.label}
-                </span>
-              ) : item.label === 'DEMO' ? (
-                <Link key={item.href} href={item.href} className="bg-white/20 text-white px-3 py-1 rounded-full hover:bg-white/30 transition-colors font-medium border border-white/30">
-                  {item.label}
-                </Link>
-              ) : item.href.startsWith('http') ? (
-                <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity">
-                  {item.label}
-                </a>
-              ) : (
-                <Link key={item.href} href={item.href} className="hover:opacity-75 transition-opacity">
-                  {item.label}
-                </Link>
-              )
-            ))}
-            {showCart && (
-              <Link href="/cart" className="relative hover:opacity-75 transition-opacity">
-                <ShoppingBag className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-            )}
+          {/* Right Side - User Info, Cart & Hamburger Menu (All Screens) */}
+          <div className="flex items-center space-x-2">
             {user && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full">
                 <User className="w-4 h-4" />
                 <span className="text-sm">{user.name || 'User'}</span>
               </div>
             )}
-          </div>
-
-          {/* Mobile Menu Button & Cart */}
-          <div className="md:hidden flex items-center space-x-2">
             {showCart && (
               <Link href="/cart" className="relative hover:opacity-75 transition-opacity">
                 <ShoppingBag className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -127,12 +89,12 @@ export default function MobileHeader({
           </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Hamburger Menu Dropdown - All Screens */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-full bg-[var(--header-bg)] border-t border-white/20 z-50 shadow-lg">
+          <div className="absolute left-0 right-0 top-full bg-[var(--header-bg)] border-t border-white/20 z-50 shadow-lg">
             <div className="container mx-auto px-4 py-4">
               {user && (
-                <div className="flex items-center gap-2 px-3 py-2 mb-4 bg-white/20 rounded-lg">
+                <div className="flex sm:hidden items-center gap-2 px-3 py-2 mb-4 bg-white/20 rounded-lg">
                   <User className="w-4 h-4" />
                   <span className="text-sm">{user.name || 'User'}</span>
                 </div>
