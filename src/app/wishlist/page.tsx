@@ -176,20 +176,20 @@ export default function WishlistPage() {
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col gap-4 mb-6">
             <div className="text-center sm:text-left">
-              <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">My Wishlist</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Price Alerts</h1>
               <p className="text-sm sm:text-base text-muted-foreground">
-                {wishlistItems.length} items • Total value: ${totalValue.toLocaleString()}
-                {saleItems > 0 && <span className="text-green-600 block sm:inline sm:ml-2">• {saleItems} on sale</span>}
+                {wishlistItems.length} items tracked • Get notified when prices drop
+                {saleItems > 0 && <span className="text-green-600 block sm:inline sm:ml-2">• {saleItems} deals found</span>}
               </p>
             </div>
             
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <button className="flex items-center justify-center gap-2 bg-secondary text-foreground px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors">
                 <Share2 className="w-4 h-4" />
-                Share Wishlist
+                Share Price Alerts
               </button>
               <button className="bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-                Shop All
+                Compare All Prices
               </button>
             </div>
           </div>

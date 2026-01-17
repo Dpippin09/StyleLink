@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, ShoppingBag, Menu, X, User } from 'lucide-react';
+import { ArrowLeft, Menu, X, User } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -9,16 +9,12 @@ interface MobileHeaderProps {
   currentPage?: string;
   backLink?: string;
   backText?: string;
-  showCart?: boolean;
-  cartCount?: number;
 }
 
 export default function MobileHeader({ 
   currentPage = '', 
   backLink = '/', 
-  backText = 'Back to StyleLink',
-  showCart = true,
-  cartCount = 0 
+  backText = 'Back to StyleLink'
 }: MobileHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuth();
@@ -29,9 +25,9 @@ export default function MobileHeader({
   };
 
   const menuItems = [
-    { href: '/wishlist', label: 'MY WISHLIST', current: currentPage === 'wishlist' },
+    { href: '/wishlist', label: 'PRICE ALERTS', current: currentPage === 'wishlist' },
+    { href: '/deals', label: 'TOP DEALS', current: currentPage === 'deals' },
     { href: '/contact', label: 'CONTACT US', current: currentPage === 'contact' },
-    { href: '/demo', label: 'DEMO', current: currentPage === 'demo' },
     { href: '/profile', label: 'PROFILE', current: currentPage === 'profile' }
   ];
 
@@ -68,16 +64,6 @@ export default function MobileHeader({
                 <User className="w-4 h-4" />
                 <span className="text-sm">{user.name || 'User'}</span>
               </div>
-            )}
-            {showCart && (
-              <Link href="/cart" className="relative hover:opacity-75 transition-opacity">
-                <ShoppingBag className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
             )}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

@@ -45,8 +45,9 @@ export default async function Home() {
                 LINK
               </h2>
               <div className="space-y-2 text-base sm:text-lg text-muted-foreground mb-8">
-                <p>Personal style, refined</p>
-                <p>through discovery.</p>
+                <p>Find the best prices</p>
+                <p>across all retailers.</p>
+                <p className="text-sm text-primary font-medium">Compare • Save • Shop Smart</p>
               </div>
               
               {/* Search Section - Now positioned below tagline */}
