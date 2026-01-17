@@ -10,19 +10,12 @@ import RealSearchResults from '@/components/RealSearchResults';
 
 function SearchResults() {
   const searchParams = useSearchParams();
-  const [cartItemCount, setCartItemCount] = useState(0);
   
   const query = searchParams.get('q') || '';
 
-  // Handle adding to cart
-  const handleAddToCart = (product: any) => {
-    setCartItemCount(prev => prev + 1);
-    console.log('Added to cart:', product);
-  };
-
   // Handle wishlist toggle
   const handleToggleWishlist = (product: any) => {
-    console.log('Toggled wishlist:', product);
+    console.log('Added to price tracking:', product);
   };
 
   return (
@@ -30,15 +23,13 @@ function SearchResults() {
       {/* Header */}
       <MobileHeader 
         currentPage="search" 
-        cartCount={cartItemCount}
-        showCart={true}
       />
 
       <div className="container mx-auto px-6 py-8">
         {/* Search Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-primary mb-4">
-            {query ? `Real Products for "${query}"` : 'Search Fashion Products'}
+            {query ? `Price Comparison for "${query}"` : 'Compare Prices Across Retailers'}
           </h1>
           
           {/* Updated Search Bar */}
@@ -57,25 +48,24 @@ function SearchResults() {
           <div className="max-w-7xl mx-auto">
             <RealSearchResults 
               query={query}
-              onAddToCart={handleAddToCart}
               onToggleWishlist={handleToggleWishlist}
             />
             
             {/* StyleLink Benefits Banner */}
             <div className="mt-12 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 text-center">
-              <h3 className="text-xl font-semibold mb-3">Why Shop Through StyleLink?</h3>
+              <h3 className="text-xl font-semibold mb-3">Why Use StyleLink for Price Comparison?</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <div className="font-medium text-primary mb-1">🛡️ Purchase Protection</div>
-                  <p className="text-muted-foreground">We track your orders and help resolve any issues</p>
+                  <div className="font-medium text-primary mb-1">� Best Prices Found</div>
+                  <p className="text-muted-foreground">We compare prices across all major retailers instantly</p>
                 </div>
                 <div>
-                  <div className="font-medium text-primary mb-1">💰 Best Price Guarantee</div>
-                  <p className="text-muted-foreground">We monitor prices and alert you to better deals</p>
+                  <div className="font-medium text-primary mb-1">� Price Tracking</div>
+                  <p className="text-muted-foreground">Get alerts when prices drop on your favorite items</p>
                 </div>
                 <div>
-                  <div className="font-medium text-primary mb-1">⭐ Style Rewards</div>
-                  <p className="text-muted-foreground">Earn points on every purchase for future discounts</p>
+                  <div className="font-medium text-primary mb-1">🔗 Trusted Links</div>
+                  <p className="text-muted-foreground">Direct links to official retailers with secure checkout</p>
                 </div>
               </div>
             </div>
