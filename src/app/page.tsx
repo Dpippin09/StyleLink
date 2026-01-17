@@ -37,8 +37,8 @@ export default async function Home() {
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start min-h-[50vh] sm:min-h-[60vh]">
           {/* Left Side - Text Content & Search */}
-          <div className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1">
-            <div>
+          <div className="space-y-6 sm:space-y-8 text-center order-2 lg:order-1 flex flex-col justify-center">
+            <div className="lg:pl-8 xl:pl-12">
               <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-primary mb-4 sm:mb-6">
                 STYL
                 <span className="inline-block transform scale-x-[-1]">E</span>
@@ -51,7 +51,7 @@ export default async function Home() {
               </div>
               
               {/* Search Section - Now positioned below tagline */}
-              <div className="max-w-md lg:max-w-lg">
+              <div className="max-w-md lg:max-w-lg mx-auto lg:mx-0">
                 {/* Search Bar with Suggestions */}
                 <div className="mb-4">
                   <SearchWithSuggestions />
