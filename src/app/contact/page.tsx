@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, HelpCircle } from 'lucide-react';
+import { Send } from 'lucide-react';
 import MobileHeader from '@/components/MobileHeader';
 import Footer from '@/components/Footer';
 
@@ -55,47 +55,6 @@ export default function ContactPage() {
     }, 3000);
   };
 
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: 'Email Support',
-      description: 'Get in touch with our support team',
-      contact: 'support@stylelink.com',
-      action: 'Send Email',
-      href: 'mailto:support@stylelink.com'
-    },
-    {
-      icon: Phone,
-      title: 'Phone Support',
-      description: 'Speak directly with our style experts',
-      contact: '+1 (555) 123-4567',
-      action: 'Call Now',
-      href: 'tel:+15551234567'
-    },
-    {
-      icon: MessageCircle,
-      title: 'Live Chat',
-      description: 'Chat with us in real-time',
-      contact: 'Available 9 AM - 6 PM EST',
-      action: 'Start Chat',
-      href: '#'
-    },
-    {
-      icon: HelpCircle,
-      title: 'Help Center',
-      description: 'Browse our frequently asked questions',
-      contact: 'Instant answers to common questions',
-      action: 'Browse FAQ',
-      href: '#'
-    }
-  ];
-
-  const officeHours = [
-    { day: 'Monday - Friday', hours: '9:00 AM - 6:00 PM EST' },
-    { day: 'Saturday', hours: '10:00 AM - 4:00 PM EST' },
-    { day: 'Sunday', hours: 'Closed' }
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -110,10 +69,10 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 mb-12 sm:mb-16">
-          {/* Contact Form */}
+        {/* Contact Form - Centered */}
+        <div className="max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="bg-card rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-sm">
-            <div className="mb-8">
+            <div className="mb-8 text-center">
               <h2 className="text-2xl font-bold text-primary mb-3">Send us a Message</h2>
               <p className="text-muted-foreground">
                 Fill out the form below and we'll get back to you within 24 hours.
@@ -237,86 +196,6 @@ export default function ContactPage() {
                 </button>
               </form>
             )}
-          </div>
-
-          {/* Contact Information */}
-          <div className="space-y-8">
-            {/* Contact Methods */}
-            <div className="bg-card rounded-2xl p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-primary mb-6">Other Ways to Reach Us</h2>
-              <div className="space-y-6">
-                {contactMethods.map((method, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 bg-background/50 rounded-lg hover:bg-background/80 transition-colors">
-                    <div className="bg-primary/10 p-3 rounded-lg">
-                      <method.icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground mb-1">{method.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-2">{method.description}</p>
-                      <p className="text-sm font-medium text-foreground mb-3">{method.contact}</p>
-                      <a
-                        href={method.href}
-                        className="inline-flex items-center text-sm text-primary hover:underline underline-offset-4"
-                      >
-                        {method.action}
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Office Hours */}
-            <div className="bg-card rounded-2xl p-8 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <Clock className="w-6 h-6 text-primary" />
-                <h2 className="text-2xl font-bold text-primary">Support Hours</h2>
-              </div>
-              <div className="space-y-4">
-                {officeHours.map((schedule, index) => (
-                  <div key={index} className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
-                    <span className="font-medium text-foreground">{schedule.day}</span>
-                    <span className="text-muted-foreground">{schedule.hours}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 p-4 bg-primary/5 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  <strong className="text-primary">Note:</strong> For urgent matters outside business hours, 
-                  please email us and we'll respond as soon as possible.
-                </p>
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className="bg-card rounded-2xl p-8 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <MapPin className="w-6 h-6 text-primary" />
-                <h2 className="text-2xl font-bold text-primary">Visit Our Office</h2>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">StyleLink Headquarters</h3>
-                  <p className="text-muted-foreground">
-                    123 Fashion Avenue<br />
-                    Suite 500<br />
-                    New York, NY 10001<br />
-                    United States
-                  </p>
-                </div>
-                <div className="pt-4">
-                  <a
-                    href="https://maps.google.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-primary hover:underline underline-offset-4"
-                  >
-                    <MapPin className="w-4 h-4 mr-2" />
-                    View on Google Maps
-                  </a>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
