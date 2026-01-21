@@ -1,0 +1,3 @@
+# Ignore mobile React Native app during web deployment
+mobile/
+mobile/**

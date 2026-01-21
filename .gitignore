@@ -13,6 +13,14 @@ node_modules
 # Production
 /build
 
+# React Native / Expo (Mobile App)
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/*.orig.*
+mobile/web-build/
+mobile/.expo-shared/
+
 # Misc
 .DS_Store
 *.pem

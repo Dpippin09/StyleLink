@@ -14,5 +14,6 @@
     "src/app/api/**": {
       "maxDuration": 30
     }
-  }
+  },
+  "ignoreCommand": "git diff --quiet HEAD~1 -- mobile/ && echo 'No mobile changes' && exit 1 || echo 'Changes detected'"
 }
