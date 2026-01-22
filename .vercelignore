@@ -1,3 +1,19 @@
 # Ignore mobile React Native app during web deployment
 mobile/
 mobile/**
+mobile/**/*
+**/mobile/**
+mobile/app/**
+mobile/components/**
+mobile/assets/**
+mobile/package.json
+mobile/package-lock.json
+mobile/app.json
+mobile/babel.config.js
+mobile/expo-env.d.ts
+
+# Expo and React Native related files that should not be in web build
+**/_layout.tsx
+**/expo-router
+**/@expo/vector-icons
+**/react-native

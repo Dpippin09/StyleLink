@@ -96,13 +96,14 @@ const nextConfig = {
   // Configure Turbopack to exclude mobile folder
   turbopack: {
     resolveAlias: {
-      'expo-router': '/dev/null',
-      '@expo/vector-icons': '/dev/null',
+      'expo-router': './src/lib/expo-router-stub',
+      '@expo/vector-icons': './src/lib/expo-vector-icons-stub',
       'react-native': '/dev/null',
     }
   },
   // Fallback webpack config for legacy mode
   webpack: (config, { isServer }) => {
+    // Completely ignore mobile directory and expo-related modules
     config.watchOptions = {
       ...config.watchOptions,
       ignored: ['**/mobile/**', '**/node_modules/**'],
@@ -110,10 +111,18 @@ const nextConfig = {
     
     config.resolve.alias = {
       ...config.resolve.alias,
-      'expo-router': false,
-      '@expo/vector-icons': false,
+      'expo-router': require.resolve('./src/lib/expo-router-stub'),
+      '@expo/vector-icons': require.resolve('./src/lib/expo-vector-icons-stub'),
       'react-native': false,
     };
+    
+    // Add more comprehensive exclusions for mobile-related modules
+    config.externals = [
+      ...(config.externals || []),
+      'react-native',
+      'expo',
+      '@expo/cli'
+    ];
     
     return config;
   },
