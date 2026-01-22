@@ -1,3 +1,0 @@
-# Placeholder for app icon
-# This should be replaced with actual 1024x1024 icon
-# For testing, you can use any PNG image named icon.png

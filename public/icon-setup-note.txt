@@ -1,1 +1,0 @@
-PWA setup complete - you should replace these SVG files with proper PNG icons
